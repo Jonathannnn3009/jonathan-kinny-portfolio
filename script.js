@@ -93,6 +93,46 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 const contactSquiggle = document.querySelector('.contact-squiggle');
 if (contactSquiggle) revealObserver.observe(contactSquiggle);
 
+// Project carousel — click-and-drag scrolling (mouse only; touch/trackpad already scroll natively).
+// Scrollbar is hidden via CSS so this drag is the direct way to move it on desktop.
+const projCarousel = document.querySelector('.proj-carousel');
+if (projCarousel) {
+  let isDragging = false;
+  let dragMoved = false;
+  let dragStartX = 0;
+  let dragStartScroll = 0;
+
+  projCarousel.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    isDragging = true;
+    dragMoved = false;
+    dragStartX = e.clientX;
+    dragStartScroll = projCarousel.scrollLeft;
+    projCarousel.classList.add('is-dragging');
+    projCarousel.setPointerCapture(e.pointerId);
+  });
+
+  projCarousel.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - dragStartX;
+    if (Math.abs(dx) > 4) dragMoved = true;
+    projCarousel.scrollLeft = dragStartScroll - dx;
+  });
+
+  function endCarouselDrag() {
+    isDragging = false;
+    projCarousel.classList.remove('is-dragging');
+  }
+  projCarousel.addEventListener('pointerup', endCarouselDrag);
+  projCarousel.addEventListener('pointercancel', endCarouselDrag);
+  projCarousel.addEventListener('pointerleave', endCarouselDrag);
+
+  // Swallow the click that follows a drag so "View Project" links don't fire accidentally
+  projCarousel.addEventListener('click', (e) => {
+    if (dragMoved) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
+}
+
 // Contact form -> sends directly via Formspree; falls back to mailto if that fails
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xnjebezq';
 

@@ -513,10 +513,17 @@ h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; }
   overflow-x: auto;
   padding-bottom: 8px;
   scroll-snap-type: x proximity;
+  scroll-behavior: smooth;
   margin: 0 -32px;
   padding-left: 32px;
   padding-right: 32px;
+  cursor: grab;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.proj-carousel::-webkit-scrollbar { display: none; }
+.proj-carousel.is-dragging { cursor: grabbing; scroll-behavior: auto; scroll-snap-type: none; }
+.proj-carousel.is-dragging .proj-slide { pointer-events: none; }
 .proj-slide {
   flex: 0 0 260px;
   scroll-snap-align: start;

@@ -79,16 +79,49 @@ const revealObserver = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-// Contact form -> mailto
+// Contact form -> sends directly via Formspree; falls back to mailto if that fails
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID'; // TODO: replace with your real Formspree endpoint
+
 const contactForm = document.getElementById('contactForm');
-contactForm.addEventListener('submit', (e) => {
-  e.preventDefault();
+const contactSubmitBtn = contactForm.querySelector('button[type="submit"]');
+const contactSubmitLabel = contactSubmitBtn.textContent;
+
+function mailtoFallback() {
   const name = contactForm.name.value.trim();
   const email = contactForm.email.value.trim();
   const message = contactForm.message.value.trim();
   const subject = encodeURIComponent(`Portfolio contact from ${name}`);
   const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
   window.location.href = `mailto:jonathankinny3009@gmail.com?subject=${subject}&body=${body}`;
+}
+
+contactForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if (FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
+    mailtoFallback();
+    return;
+  }
+
+  contactSubmitBtn.disabled = true;
+  contactSubmitBtn.textContent = '[ Sending... ]';
+
+  try {
+    const res = await fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: new FormData(contactForm),
+    });
+    if (!res.ok) throw new Error('Form submission failed');
+    contactSubmitBtn.textContent = '[ Message Sent ]';
+    contactForm.reset();
+  } catch {
+    contactSubmitBtn.textContent = contactSubmitLabel;
+    mailtoFallback();
+  } finally {
+    contactSubmitBtn.disabled = false;
+    setTimeout(() => { contactSubmitBtn.textContent = contactSubmitLabel; }, 3000);
+  }
 });
 
 // Footer year

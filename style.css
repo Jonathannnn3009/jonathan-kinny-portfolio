@@ -228,6 +228,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; }
   background-image: radial-gradient(circle, var(--border) 1.2px, transparent 1.4px);
   background-size: 28px 28px;
   border-right: 1px solid var(--border);
+  animation: bgDotDrift 52s linear infinite;
 }
 
 .sidebar__top {
@@ -309,6 +310,16 @@ h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; }
   background-color: var(--bg-alt);
   background-image: radial-gradient(circle, var(--border) 1.2px, transparent 1.4px);
   background-size: 28px 28px;
+  animation: bgDotDrift 45s linear infinite;
+}
+
+@keyframes bgDotDrift {
+  from { background-position: 0 0; }
+  to { background-position: 56px 56px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content, .sidebar, .hero-anim__dots, .intro__stars { animation: none; }
 }
 
 .panel {
@@ -775,6 +786,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; }
   background-size: 32px 32px;
   opacity: 0.7;
   pointer-events: none;
+  animation: bgDotDrift 38s linear infinite;
 }
 
 /* ===== ORBITAL 3D CARD RING ===== */
@@ -1079,6 +1091,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; }
   background-image: radial-gradient(circle, rgba(128,128,128,0.5) 1px, transparent 1.4px);
   background-size: 60px 60px;
   opacity: 0.5;
+  animation: bgDotDrift 60s linear infinite;
 }
 
 .intro__step { position: relative; z-index: 1; text-align: center; padding: 24px; }

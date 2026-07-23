@@ -64,9 +64,19 @@ const spyObserver = new IntersectionObserver((entries) => {
 
 panels.forEach(panel => spyObserver.observe(panel));
 
-// Scroll reveal
-const revealTargets = document.querySelectorAll('.about-card, .timeline__item, .proj-card, .skill-block, .edu-list, .contact-row, .contact-form');
-revealTargets.forEach(el => el.classList.add('reveal'));
+// Scroll reveal — fades/lifts elements in as they enter the viewport, with a
+// cascading stagger for siblings (cards in a grid, chips in a row, etc.)
+const revealTargets = document.querySelectorAll(
+  '.about-card, .timeline__item, .proj-card, .proj-slide, .skill-block, .edu-list, .contact-row, .contact-form, .panel__title, .eyebrow, .social-item, .cta-statement'
+);
+const revealGroupCounts = new Map();
+revealTargets.forEach((el) => {
+  el.classList.add('reveal');
+  const group = el.parentElement;
+  const idx = revealGroupCounts.get(group) || 0;
+  el.style.transitionDelay = `${Math.min(idx * 70, 350)}ms`;
+  revealGroupCounts.set(group, idx + 1);
+});
 
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {

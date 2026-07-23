@@ -89,6 +89,10 @@ const revealObserver = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
+// Contact squiggle doodle draws itself in on scroll (own animation, kept out of the generic .reveal system)
+const contactSquiggle = document.querySelector('.contact-squiggle');
+if (contactSquiggle) revealObserver.observe(contactSquiggle);
+
 // Contact form -> sends directly via Formspree; falls back to mailto if that fails
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xnjebezq';
 

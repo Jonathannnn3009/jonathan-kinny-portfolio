@@ -21,6 +21,7 @@
   --font-mono: 'JetBrains Mono', monospace;
   --font-pixel: 'Press Start 2P', monospace;
   --neon: #d7ff3f;
+  --squiggle: #ef4444;
 }
 
 :root[data-theme="dark"] {
@@ -734,6 +735,37 @@ h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ===== CONTACT SQUIGGLE DOODLE ===== */
+#contact { position: relative; }
+.contact-squiggle {
+  display: none;
+  position: absolute;
+  top: 10px;
+  left: 100%;
+  margin-left: 40px;
+  width: 160px;
+  height: auto;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.contact-squiggle path {
+  stroke: var(--squiggle);
+  stroke-dasharray: 1100;
+  stroke-dashoffset: 1100;
+  transition: stroke-dashoffset 1.6s cubic-bezier(.25,.8,.3,1);
+}
+.contact-squiggle.is-visible { opacity: 1; }
+.contact-squiggle.is-visible path { stroke-dashoffset: 0; }
+
+@media (min-width: 1550px) {
+  .contact-squiggle { display: block; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact-squiggle { opacity: 1; }
+  .contact-squiggle path { stroke-dashoffset: 0; transition: none; }
 }
 
 /* ===== RESPONSIVE ===== */

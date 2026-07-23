@@ -80,7 +80,7 @@ const revealObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
 // Contact form -> sends directly via Formspree; falls back to mailto if that fails
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID'; // TODO: replace with your real Formspree endpoint
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xnjebezq';
 
 const contactForm = document.getElementById('contactForm');
 const contactSubmitBtn = contactForm.querySelector('button[type="submit"]');

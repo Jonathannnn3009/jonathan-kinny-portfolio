@@ -89,10 +89,6 @@ const revealObserver = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-// Contact squiggle doodle draws itself in on scroll (own animation, kept out of the generic .reveal system)
-const contactSquiggle = document.querySelector('.contact-squiggle');
-if (contactSquiggle) revealObserver.observe(contactSquiggle);
-
 // Project carousel — click-and-drag scrolling (mouse only; touch/trackpad already scroll natively).
 // Scrollbar is hidden via CSS so this drag is the direct way to move it on desktop.
 const projCarousel = document.querySelector('.proj-carousel');

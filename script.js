@@ -183,7 +183,7 @@ if (glitchEl) {
   const glitchPhrases = [
     '_//Manual work... Automated away//_',
     '_//1.7+ years... shipping daily//_',
-    '_//Data Analyst @ SBI Factors//_',
+    '_//Data Analyst & Automation Engineer//_',
     '_//Open to Data & AI roles//_',
   ];
   const glyphs = '!<>-_\\/[]{}—=+*^?#01';
@@ -222,7 +222,7 @@ if (glitchEl) {
 
 // Quick timeline (experience) — click a year marker to swap the summary card
 const qtEntries = [
-  { logo: 'SF', role: 'Data Analyst, IT Department', dates: 'Apr 2025 — Present', location: 'Mumbai, IN', tag: 'FULL TIME' },
+  { logo: 'SF', role: 'Data Analyst & Automation Engineer', dates: 'Apr 2025 — Present', location: 'Mumbai, IN', tag: 'FULL TIME' },
   { logo: 'SG', role: 'Risk Analyst Intern', dates: 'Jan 2025 — Feb 2025', location: 'Mumbai, IN', tag: 'INTERNSHIP' },
   { logo: 'DA', role: 'Data Analysis Intern', dates: 'Mar 2024 — May 2024', location: 'Remote', tag: 'INTERNSHIP' },
 ];

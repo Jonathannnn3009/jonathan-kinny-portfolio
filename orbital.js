@@ -21,6 +21,10 @@ function initOrbital() {
   const STEP = 360 / COUNT;
   const IDLE_DURATION_MS = 48000;
 
+  // Each card's own rotateY offset (--i * this) is read from CSS — keep it in sync with
+  // however many cards actually exist, instead of a value baked in for a fixed card count.
+  ring.style.setProperty('--oc-step', `${STEP}deg`);
+
   const BASE_TILT = -6;
   const STEP_COOLDOWN = 550; // ms — one scroll gesture = one step, ignore the rest of it
 

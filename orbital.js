@@ -25,6 +25,14 @@ function initOrbital() {
   // however many cards actually exist, instead of a value baked in for a fixed card count.
   ring.style.setProperty('--oc-step', `${STEP}deg`);
 
+  // The ring's radius (translateZ) must grow with card count too, or cards packed into
+  // smaller angular gaps start physically overlapping. Standard regular-polygon geometry:
+  // for N cards of width W arranged edge-to-edge around a circle, R = W / (2*tan(PI/N)).
+  // A small buffer factor keeps a visible gap between cards instead of them touching exactly.
+  const CARD_WIDTH = 425; // must match .orbital-card's width in style.css
+  const RADIUS = (CARD_WIDTH / (2 * Math.tan(Math.PI / COUNT))) * 1.08;
+  ring.style.setProperty('--oc-radius', `${RADIUS.toFixed(1)}px`);
+
   const BASE_TILT = -6;
   const STEP_COOLDOWN = 550; // ms — one scroll gesture = one step, ignore the rest of it
 

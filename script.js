@@ -177,12 +177,23 @@ contactForm.addEventListener('submit', async (e) => {
 // Footer year
 document.getElementById('year').textContent = new Date().getFullYear();
 
+// Years of experience — auto-calculated from the career start date instead of a
+// hardcoded number that goes stale. Anchored to the "Apr 2025 — Present" role start.
+const CAREER_START = new Date(2025, 3, 1);
+function yearsOfExperience() {
+  const years = (Date.now() - CAREER_START.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+  return Math.max(0, years);
+}
+const expYearsLabel = `${yearsOfExperience().toFixed(1)}+ Years`;
+const expYearsEl = document.getElementById('expYears');
+if (expYearsEl) expYearsEl.textContent = expYearsLabel;
+
 // Glitch headline — scramble-then-resolve effect, cycling through a few taglines
 const glitchEl = document.getElementById('glitchText');
 if (glitchEl) {
   const glitchPhrases = [
     '_//Manual work... Automated away//_',
-    '_//1.7+ years... shipping daily//_',
+    `_//${yearsOfExperience().toFixed(1)}+ years... shipping daily//_`,
     '_//Data Analyst & Automation Engineer//_',
     '_//Open to Data & AI roles//_',
   ];

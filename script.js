@@ -177,13 +177,18 @@ contactForm.addEventListener('submit', async (e) => {
 // Footer year
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// Years of experience — auto-calculated from the career start date instead of a
-// hardcoded number that goes stale. Anchored to the Risk Analyst Intern start
-// (Jan 2025), so the internship counts toward total experience too.
-const CAREER_START = new Date(2025, 0, 1);
+// Years of experience — auto-calculated by summing actual worked periods (matching
+// the Experience timeline below) instead of a hardcoded number that goes stale.
+// Unworked gaps between roles (e.g. Jun 2024 – Dec 2024, Mar 2025) aren't counted.
+const EXPERIENCE_PERIODS = [
+  [new Date(2024, 2, 1), new Date(2024, 5, 1)],  // Data Analysis Intern: Mar – May 2024 (3 mo)
+  [new Date(2025, 0, 1), new Date(2025, 2, 1)],  // Risk Analyst Intern: Jan – Feb 2025 (2 mo)
+  [new Date(2025, 3, 1), new Date()],            // Data Analyst & Automation Engineer: Apr 2025 – Present
+];
 function yearsOfExperience() {
-  const years = (Date.now() - CAREER_START.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
-  return Math.max(0, years);
+  const msPerYear = 1000 * 60 * 60 * 24 * 365.25;
+  const totalMs = EXPERIENCE_PERIODS.reduce((sum, [start, end]) => sum + Math.max(0, end - start), 0);
+  return totalMs / msPerYear;
 }
 const expYearsLabel = `${yearsOfExperience().toFixed(1)}+ Years`;
 const expYearsEl = document.getElementById('expYears');

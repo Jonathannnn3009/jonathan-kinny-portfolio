@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Jonathan Kinny — Resume</title>
+<style>
+  @page { size: A4; margin: 10mm 14mm; }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    color: #1a1a1a;
+    background: #fff;
+  }
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 10mm 14mm;
+  }
+  .name {
+    font-size: 26pt;
+    font-weight: 700;
+    color: #B8860B;
+    margin: 0 0 2pt;
+    letter-spacing: 0.3pt;
+  }
+  .title {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11.5pt;
+    font-weight: 700;
+    color: #7B2D3E;
+    margin: 0 0 6pt;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    gap: 24pt;
+  }
+  .header-left { flex: 1.7; }
+  .header-right {
+    flex: 1;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9.5pt;
+    text-align: right;
+    color: #1a1a1a;
+    padding-top: 4pt;
+    line-height: 1.9;
+    white-space: nowrap;
+  }
+  .summary {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9pt;
+    color: #444;
+    line-height: 1.4;
+    margin: 0;
+  }
+  .rule {
+    border: none;
+    border-top: 2pt solid #B8860B;
+    margin: 7pt 0 9pt;
+  }
+  .body {
+    display: flex;
+    gap: 26pt;
+    align-items: flex-start;
+  }
+  .col-left { flex: 1.72; min-width: 0; }
+  .col-right { flex: 1; min-width: 0; }
+
+  h2.section {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11pt;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 0.4pt;
+    margin: 0 0 5pt;
+    padding-bottom: 2pt;
+    border-bottom: 1pt solid #B8860B;
+  }
+  h2.section:not(:first-child) { margin-top: 9pt; }
+  h2.section::before {
+    content: "\25A0 ";
+    color: #7B2D3E;
+    font-size: 8pt;
+  }
+
+  .job-role {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+    font-weight: 700;
+    margin: 5pt 0 1pt;
+  }
+  .job-org {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9pt;
+    font-style: italic;
+    color: #7B2D3E;
+    margin: 0 0 1pt;
+  }
+  .job-meta {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 8.3pt;
+    color: #666;
+    margin: 0 0 2.5pt;
+  }
+  ul.bullets {
+    margin: 0 0 1pt;
+    padding-left: 12pt;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 8.3pt;
+    color: #222;
+    line-height: 1.28;
+  }
+  ul.bullets li { margin-bottom: 2.5pt; padding-left: 1pt; }
+
+  .edu-item { margin-top: 5pt; }
+  .edu-degree {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 10pt;
+    margin: 0 0 1pt;
+  }
+  .edu-org {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9pt;
+    color: #7B2D3E;
+    margin: 0 0 1pt;
+  }
+  .edu-meta {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 8.5pt;
+    color: #666;
+    margin: 0;
+  }
+
+  .skill-line {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 8.3pt;
+    line-height: 1.32;
+    margin: 0 0 4.5pt;
+    color: #222;
+  }
+  .skill-line b { color: #1a1a1a; }
+
+  .proj { margin-top: 5pt; }
+  .proj-name {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 9pt;
+    margin: 0 0 1pt;
+  }
+  .proj-desc {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    color: #444;
+    margin: 0;
+    line-height: 1.25;
+  }
+
+  ul.cert-list {
+    margin: 0;
+    padding-left: 11pt;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    color: #222;
+    line-height: 1.4;
+  }
+  ul.cert-list li { margin-bottom: 1.5pt; }
+  ul.cert-list span { color: #666; font-style: italic; }
+
+  .lang-line {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 8.3pt;
+    margin: 0 0 3pt;
+    color: #222;
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+
+    <div class="header">
+      <div class="header-left">
+        <p class="name">Jonathan Kinny</p>
+        <p class="title">Data Analyst, Automation &amp; Full-Stack Engineer</p>
+        <p class="summary">Data Analyst, Automation &amp; Full-Stack Engineer with 1.8+ years building internal AI assistants, financial dashboards, and automation tools across HR, IT, Credit, Operations, Debt, Legal, and Audit. Skilled at turning manual, spreadsheet- and email-driven processes into auditable systems — combining Flask backends, React front ends, SQL/Oracle data pipelines, OCR &amp; NLP automation, Power BI dashboards, and predictive modelling.</p>
+      </div>
+      <div class="header-right">
+        jonathankinny3009@gmail.com<br>
+        +91 86930 82599<br>
+        Santa Cruz (E), Mumbai – 400098<br>
+        linkedin.com/in/jonathan-kinny
+      </div>
+    </div>
+
+    <hr class="rule">
+
+    <div class="body">
+      <div class="col-left">
+
+        <h2 class="section">Work Experience</h2>
+
+        <p class="job-role">Data Analyst, Automation &amp; Full-Stack Engineer — IT Department</p>
+        <p class="job-org">State Bank of India (Factoring)</p>
+        <p class="job-meta">Apr 2025 — Present &nbsp;·&nbsp; Mumbai, India</p>
+        <ul class="bullets">
+          <li>Built SARA, a Flask-based internal AI assistant integrating department-wise policy databases, a DB querying engine, OCR &amp; NLP pipelines, and automated email summaries — cutting task completion time by 95% across 6 departments.</li>
+          <li>Designed the SBI Factors Hub, a single sign-on portal consolidating 10+ internal applications (Salesforce, DMS, TMS, HRMS, LOS, and more) with card-based navigation and search autocomplete.</li>
+          <li>Built a Power BI executive dashboard tracking FIU Outstanding, Turnover, and NPA metrics across product and branch dimensions using custom DAX measures.</li>
+          <li>Analysed historical SMA trend charts for a recurring client, identifying seasonal payment-default peaks and recurring day-of-month lapse patterns — giving the Debt Department early-warning visibility into repeat SMA classification behaviour.</li>
+          <li>Built the SMA Report Management System (Flask + SQLite) for the Debt Department, automating daily entry, currency-wise reporting, and reminder workflows.</li>
+          <li>Developed an OCR-based Invoice–PO Validator integrated into SARA, and ran a vendor ROI evaluation between two OCR providers for leadership.</li>
+          <li>Built the Audit Queries Tracker (Flask + MySQL) with role-based access, automatic email notifications, and a multi-level SLA escalation matrix.</li>
+          <li>Led a large-scale Oracle → MySQL migration of the lending management system, building a Python gateway to migrate 15+ years of historical financial data with full validation.</li>
+          <li>Delivered additional internal tools including a Legal Cases Tracker, an SMA Status Tracker, an employee quiz platform, and PDF automation utilities; conducted FY24–25 risk analysis identifying redundant PRR clients.</li>
+        </ul>
+
+        <p class="job-role">Risk Analyst Intern</p>
+        <p class="job-org">SBI Global Factors Ltd.</p>
+        <p class="job-meta">Jan 2025 — Feb 2025 &nbsp;·&nbsp; Mumbai, India</p>
+        <ul class="bullets">
+          <li>Built interactive MIS and concentration-risk dashboards with automated financial risk monitoring for management.</li>
+          <li>Worked with the Debt Department to analyse recurring SMA-falling clients and flag high-risk sectors.</li>
+          <li>Delivered data-driven analysis across IT and HR, including client/debtor portals, breakeven analysis, and attrition heatmaps.</li>
+        </ul>
+
+        <p class="job-role">Data Analysis Intern</p>
+        <p class="job-org">Freelance / Internship</p>
+        <p class="job-meta">Mar 2024 — May 2024 &nbsp;·&nbsp; Remote</p>
+        <ul class="bullets">
+          <li>Optimised sales strategy for a major e-commerce platform, improving profit margin by 15%.</li>
+          <li>Forecasted market trends for 500+ Indian companies and ran review/rating analysis using Python, Pandas, and Seaborn.</li>
+        </ul>
+
+        <h2 class="section">Education</h2>
+        <div class="edu-item">
+          <p class="edu-degree">M.Sc Data Science</p>
+          <p class="edu-org">Chandigarh University, Chandigarh, India</p>
+          <p class="edu-meta">Jan 2026 — Present</p>
+        </div>
+        <div class="edu-item">
+          <p class="edu-degree">B.Sc (Honours) Applied Statistics &amp; Data Analytics</p>
+          <p class="edu-org">SVKM's Mithibai College, Mumbai, India</p>
+          <p class="edu-meta">Jun 2022 — Mar 2025 &nbsp;·&nbsp; CGPA 8.44/10</p>
+        </div>
+
+      </div>
+
+      <div class="col-right">
+
+        <h2 class="section">Skills</h2>
+        <p class="skill-line"><b>Programming:</b> Python, R, SQL, HTML, CSS, Java, Gen AI</p>
+        <p class="skill-line"><b>Data Visualisation:</b> Power BI, Advanced Excel, Seaborn, Matplotlib</p>
+        <p class="skill-line"><b>Machine Learning:</b> Random Forest, Decision Trees, SARIMA, Holt-Winters, Logistic Regression, Predictive Modelling</p>
+        <p class="skill-line"><b>Tools &amp; Frameworks:</b> Flask, MySQL, Oracle, SQLite, React, DAX</p>
+        <p class="skill-line"><b>Specialisations:</b> OCR, NLP, AI Automation, Statistical Modelling, MIS Dashboards, Risk Analytics, Concentration Risk</p>
+
+        <h2 class="section">Personal Projects</h2>
+        <div class="proj">
+          <p class="proj-name">Premium Pricing</p>
+          <p class="proj-desc">Modelled health insurance premiums and profit margins using regression on calculated projections.</p>
+        </div>
+        <div class="proj">
+          <p class="proj-name">Classmate Akinator</p>
+          <p class="proj-desc">Python decision-tree guessing game (Tkinter) demonstrating classification and algorithm design.</p>
+        </div>
+        <div class="proj">
+          <p class="proj-name">Diabetes Prediction</p>
+          <p class="proj-desc">Compared classifiers (Logistic Regression, Random Forest, etc.) in R; built an interactive ShinyApp risk evaluator.</p>
+        </div>
+        <div class="proj">
+          <p class="proj-name">Precious Metals Forecasting</p>
+          <p class="proj-desc">Forecasted gold, silver, platinum, and palladium prices using SARIMA and Holt-Winters models.</p>
+        </div>
+
+        <h2 class="section">Certifications</h2>
+        <ul class="cert-list">
+          <li>Machine Learning with Python — <span>Mithibai College</span></li>
+          <li>AI Generalist — <span>The Economic Times</span></li>
+          <li>Data Analytics &amp; Visualization — <span>Accenture North America (Forage)</span></li>
+          <li>Data Visualization — <span>Tata (Forage)</span></li>
+          <li>Data Analytics Job Simulation — <span>KPMG AU (Forage)</span></li>
+          <li>Introduction to Data Studio — <span>Google Analytics</span></li>
+        </ul>
+
+        <h2 class="section">Languages</h2>
+        <p class="lang-line"><b>English:</b> Full Professional</p>
+        <p class="lang-line"><b>Hindi:</b> Full Professional</p>
+        <p class="lang-line"><b>Marathi:</b> Professional Working</p>
+        <p class="lang-line"><b>East Indian:</b> Full Professional</p>
+
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

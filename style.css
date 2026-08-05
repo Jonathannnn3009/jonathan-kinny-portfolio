@@ -263,7 +263,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; }
 
 .sidebar__name { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; }
 .sidebar__handle { color: var(--text-faint); font-size: 0.84rem; margin: 0 0 10px; }
-.sidebar__title { font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
+.sidebar__title { font-weight: 700; font-size: 0.88rem; line-height: 1.32; color: var(--accent); margin-bottom: 4px; }
 .sidebar__years { color: var(--text-faint); font-size: 0.82rem; margin: 0 0 14px; }
 .sidebar__label { color: var(--text-faint); font-size: 0.76rem; margin: 0 0 8px; font-family: var(--font-mono); }
 

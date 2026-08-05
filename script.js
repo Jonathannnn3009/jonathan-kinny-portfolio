@@ -178,8 +178,9 @@ contactForm.addEventListener('submit', async (e) => {
 document.getElementById('year').textContent = new Date().getFullYear();
 
 // Years of experience — auto-calculated from the career start date instead of a
-// hardcoded number that goes stale. Anchored to the "Apr 2025 — Present" role start.
-const CAREER_START = new Date(2025, 3, 1);
+// hardcoded number that goes stale. Anchored to the Risk Analyst Intern start
+// (Jan 2025), so the internship counts toward total experience too.
+const CAREER_START = new Date(2025, 0, 1);
 function yearsOfExperience() {
   const years = (Date.now() - CAREER_START.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
   return Math.max(0, years);

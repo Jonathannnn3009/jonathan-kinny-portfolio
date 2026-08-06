@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SBI Factors Quiz Hub — Demo</title>
+<style>
+  :root {
+    --indigo: #4338ca; --indigo-2: #312e81; --accent: #6d28d9; --gold: #d97706; --green: #16a34a; --red: #dc2626;
+    --bg: #f5f4fb; --panel: #ffffff; --border: #e6e3f5; --text: #1e1b3a; --text-dim: #6b6690;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); }
+
+  .topbar { background: linear-gradient(90deg, var(--indigo), var(--indigo-2)); color: #fff; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .topbar__brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+  .topbar__brand .logo { width: 30px; height: 30px; border-radius: 6px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+  .demo-badge { background: rgba(217,119,6,0.2); color: #fcd34d; border: 1px solid rgba(217,119,6,0.4); padding: 3px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+  .user-pill { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+  .user-pill .av { width: 28px; height: 28px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; color: #1e1b3a; }
+
+  .wrap { max-width: 900px; margin: 0 auto; padding: 28px; }
+  .view { display: none; }
+  .view.is-active { display: block; }
+
+  /* ---- Home / category select ---- */
+  .home-head { text-align: center; margin-bottom: 26px; }
+  .home-head h1 { font-size: 1.6rem; margin: 0 0 6px; }
+  .home-head p { color: var(--text-dim); font-size: 0.9rem; margin: 0; }
+
+  .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .cat-card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px;
+    cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+  .cat-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(67,56,202,0.12); border-color: var(--indigo); }
+  .cat-card .icon { font-size: 1.6rem; margin-bottom: 10px; }
+  .cat-card h3 { margin: 0 0 4px; font-size: 1rem; }
+  .cat-card p { margin: 0; font-size: 0.78rem; color: var(--text-dim); }
+  .cat-card .meta { margin-top: 12px; font-size: 0.72rem; color: var(--indigo); font-weight: 700; }
+
+  .board { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .board h3 { margin: 0 0 4px; font-size: 0.95rem; }
+  .board .sub { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 14px; }
+  table.lb { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+  table.lb th { text-align: left; color: var(--text-dim); font-weight: 600; padding: 6px 10px; font-size: 0.7rem; text-transform: uppercase; border-bottom: 2px solid var(--border); }
+  table.lb td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
+  table.lb tr:last-child td { border-bottom: none; }
+  table.lb tr.is-you { background: #f5f3ff; }
+  .rank-pill { display: inline-flex; width: 22px; height: 22px; border-radius: 50%; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 800; background: var(--border); color: var(--text-dim); }
+  .rank-pill.gold { background: #fde68a; color: #92400e; }
+  .rank-pill.silver { background: #e5e7eb; color: #374151; }
+  .rank-pill.bronze { background: #fed7aa; color: #9a3412; }
+
+  /* ---- Quiz view ---- */
+  .quiz-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .quiz-head .cat-name { font-weight: 700; font-size: 0.95rem; }
+  .quiz-head .qnum { font-size: 0.8rem; color: var(--text-dim); }
+  .timer { font-family: monospace; font-weight: 700; font-size: 0.9rem; color: var(--gold); }
+
+  .progress-track { height: 6px; border-radius: 999px; background: var(--border); overflow: hidden; margin-bottom: 22px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--indigo), var(--accent)); transition: width 0.3s ease; }
+
+  .q-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 26px; }
+  .q-text { font-size: 1.05rem; font-weight: 600; margin: 0 0 20px; line-height: 1.5; }
+  .opt-list { display: flex; flex-direction: column; gap: 10px; }
+  .opt {
+    display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-radius: 9px; border: 1.5px solid var(--border);
+    background: #fbfaff; cursor: pointer; font-size: 0.9rem; transition: all 0.15s ease;
+  }
+  .opt:hover { border-color: var(--indigo); }
+  .opt .letter { width: 24px; height: 24px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.74rem; font-weight: 700; flex-shrink: 0; }
+  .opt.is-selected { border-color: var(--indigo); background: #eef2ff; }
+  .opt.is-selected .letter { background: var(--indigo); color: #fff; }
+  .opt.is-correct { border-color: var(--green); background: #f0fdf4; }
+  .opt.is-correct .letter { background: var(--green); color: #fff; }
+  .opt.is-wrong { border-color: var(--red); background: #fef2f2; }
+  .opt.is-wrong .letter { background: var(--red); color: #fff; }
+  .opt.is-disabled { cursor: default; pointer-events: none; }
+
+  .quiz-actions { display: flex; justify-content: flex-end; margin-top: 20px; }
+  .btn-next {
+    background: var(--indigo); color: #fff; border: none; padding: 11px 24px; border-radius: 8px;
+    font-weight: 700; font-size: 0.86rem; cursor: pointer;
+  }
+  .btn-next:disabled { background: #d1d5db; cursor: not-allowed; }
+
+  /* ---- Results view ---- */
+  .result-hero { text-align: center; padding: 30px 20px; }
+  .result-hero .score-ring {
+    width: 140px; height: 140px; border-radius: 50%; margin: 0 auto 18px; display: flex; align-items: center; justify-content: center;
+    background: conic-gradient(var(--indigo) calc(var(--pct) * 1%), var(--border) 0);
+    position: relative;
+  }
+  .result-hero .score-ring::after { content: ''; position: absolute; inset: 12px; border-radius: 50%; background: var(--bg); }
+  .result-hero .score-num { position: relative; z-index: 1; font-size: 1.6rem; font-weight: 800; }
+  .result-hero h2 { margin: 0 0 6px; }
+  .result-hero p { color: var(--text-dim); margin: 0 0 20px; }
+  .btn-row { display: flex; gap: 10px; justify-content: center; }
+  .btn-secondary, .btn-primary {
+    padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 0.84rem; cursor: pointer; border: none;
+  }
+  .btn-primary { background: var(--indigo); color: #fff; }
+  .btn-secondary { background: #fff; color: var(--indigo); border: 1.5px solid var(--indigo); }
+
+  .review-list { margin-top: 26px; text-align: left; }
+  .review-item { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; font-size: 0.84rem; }
+  .review-item .rq { font-weight: 600; margin-bottom: 6px; }
+  .review-item .ra { color: var(--text-dim); }
+  .review-item .ra.correct { color: var(--green); font-weight: 600; }
+  .review-item .ra.wrong { color: var(--red); font-weight: 600; }
+
+  .footnote { text-align: center; color: var(--text-dim); font-size: 0.76rem; margin-top: 24px; padding-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar__brand"><div class="logo">🧠</div> SBI Factors Quiz Hub</div>
+  <span class="demo-badge">SANITIZED DEMO · ILLUSTRATIVE QUESTIONS</span>
+  <div class="user-pill"><div class="av">JK</div> Jonathan K. · IT Dept</div>
+</div>
+
+<div class="wrap">
+
+  <!-- HOME -->
+  <div class="view is-active" id="viewHome">
+    <div class="home-head">
+      <h1>Pick a quiz</h1>
+      <p>Quick knowledge checks used for onboarding and refresher training across departments.</p>
+    </div>
+    <div class="cat-grid" id="catGrid"></div>
+    <div class="board">
+      <h3>🏆 Leaderboard — Factoring Basics</h3>
+      <div class="sub">Top scores this month</div>
+      <table class="lb">
+        <thead><tr><th>Rank</th><th>Employee</th><th>Dept</th><th>Score</th></tr></thead>
+        <tbody id="lbBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="view" id="viewQuiz">
+    <div class="quiz-head">
+      <span class="cat-name" id="quizCatName">Category</span>
+      <span class="qnum" id="quizQNum">Question 1 / 5</span>
+      <span class="timer" id="quizTimer">00:20</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="quizProgress" style="width:20%"></div></div>
+    <div class="q-card">
+      <p class="q-text" id="qText">Question text</p>
+      <div class="opt-list" id="optList"></div>
+      <div class="quiz-actions"><button class="btn-next" id="btnNext" disabled>Next ›</button></div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="view" id="viewResults">
+    <div class="result-hero">
+      <div class="score-ring" id="scoreRing" style="--pct:0"><span class="score-num" id="scoreNum">0/5</span></div>
+      <h2 id="resultTitle">Quiz complete!</h2>
+      <p id="resultSub">You scored well.</p>
+      <div class="btn-row">
+        <button class="btn-secondary" id="btnRetake">Retake Quiz</button>
+        <button class="btn-primary" id="btnHome">Back to Quiz Hub</button>
+      </div>
+      <div class="review-list" id="reviewList"></div>
+    </div>
+  </div>
+
+  <p class="footnote">Reconstructed portfolio demo of the internal employee quiz platform — questions and leaderboard are illustrative, no real training data is shown.</p>
+</div>
+
+<script>
+  const categories = [
+    { id: 'factoring', icon: '💰', name: 'Factoring Basics', desc: 'Core concepts of invoice factoring & FIU limits', questions: 5 },
+    { id: 'hr', icon: '📋', name: 'HR Policies', desc: 'Leave, conduct, and onboarding policy essentials', questions: 5 },
+    { id: 'security', icon: '🔒', name: 'IT Security', desc: 'Password hygiene, phishing, and data handling', questions: 5 },
+    { id: 'compliance', icon: '⚖️', name: 'Compliance & Audit', desc: 'KYC, SMA classification, and audit basics', questions: 5 },
+  ];
+
+  const questionBank = {
+    factoring: [
+      { q: 'What does "FIU" stand for in the context of a factoring limit?', opts: ['Factoring Interest Utilised', 'Facility In Use', 'Finance Investment Unit', 'Factoring Instrument Undertaking'], correct: 1 },
+      { q: 'In invoice factoring, who is the "assignor"?', opts: ['The bank providing funds', 'The debtor who owes payment', 'The client assigning their receivables', 'The auditor reviewing the ledger'], correct: 2 },
+      { q: 'What is a "recourse" factoring arrangement?', opts: ['Client bears risk if the debtor defaults', 'Bank bears all default risk', 'No risk is assigned to anyone', 'Only applies to export factoring'], correct: 0 },
+      { q: 'What does NPA stand for?', opts: ['Net Payable Amount', 'Non-Performing Asset', 'New Product Approval', 'Net Profit Analysis'], correct: 1 },
+      { q: 'Which department typically monitors SMA classification trends?', opts: ['HR', 'Legal', 'Debt', 'IT'], correct: 2 },
+    ],
+    hr: [
+      { q: 'How many days of notice are typically required before taking planned leave?', opts: ['Same day', 'At least 2 working days', 'No notice needed', '30 days'], correct: 1 },
+      { q: 'Who should you contact first for a policy clarification?', opts: ['Any colleague', 'HR department', 'External consultant', 'Social media'], correct: 1 },
+      { q: 'What is typically required during onboarding?', opts: ['ID verification & document submission', 'Nothing', 'A written essay', 'A background song'], correct: 0 },
+      { q: 'Code of conduct violations should be reported to?', opts: ['HR / reporting manager', 'Kept private', 'Posted online', 'Ignored'], correct: 0 },
+      { q: 'What does "professional working proficiency" typically describe?', opts: ['A language skill level', 'A software certification', 'A job title', 'A leave type'], correct: 0 },
+    ],
+    security: [
+      { q: 'What should you do if you receive a suspicious email asking for credentials?', opts: ['Reply with your password', 'Report it to IT and do not click links', 'Forward to colleagues', 'Ignore and delete only'], correct: 1 },
+      { q: 'How often should passwords typically be rotated in a secure environment?', opts: ['Never', 'Only if compromised', 'Per company policy (e.g. periodically)', 'Every day'], correct: 2 },
+      { q: 'What is "phishing"?', opts: ['A networking technique', 'A social-engineering attack to steal credentials', 'A type of firewall', 'A data backup method'], correct: 1 },
+      { q: 'Sensitive client data should be shared via?', opts: ['Personal email', 'Approved secure channels only', 'Public chat groups', 'USB drives freely'], correct: 1 },
+      { q: 'What is two-factor authentication?', opts: ['Two separate passwords', 'A password plus a second verification step', 'Logging in twice', 'A type of encryption algorithm'], correct: 1 },
+    ],
+    compliance: [
+      { q: 'What does KYC stand for?', opts: ['Keep Your Contract', 'Know Your Customer', 'Key Yield Calculation', 'Know Your Credit'], correct: 1 },
+      { q: 'SMA-2 classification typically indicates overdue days in which range?', opts: ['1-30 days', '31-60 days', '61-90 days', '90+ days (NPA)'], correct: 2 },
+      { q: 'Who conducts periodic internal audits?', opts: ['External customers', 'The Audit department', 'IT only', 'No one'], correct: 1 },
+      { q: 'What is the purpose of an SLA escalation matrix?', opts: ['To assign parking spots', 'To ensure timely resolution of flagged issues', 'To track vacation days', 'To rank employees'], correct: 1 },
+      { q: 'A full audit trail is important because it provides?', opts: ['Faster coffee breaks', 'Accountability and traceability of actions', 'Free advertising', 'Nothing useful'], correct: 1 },
+    ],
+  };
+
+  const leaderboard = [
+    { name: 'Priya S.', dept: 'Credit', score: '5/5' },
+    { name: 'Rahul M.', dept: 'Operations', score: '5/5' },
+    { name: 'Ananya D.', dept: 'Legal', score: '4/5' },
+    { name: 'Jonathan K.', dept: 'IT', score: '4/5', you: true },
+    { name: 'Vikram T.', dept: 'Debt', score: '3/5' },
+  ];
+
+  let currentCat = null;
+  let currentQIndex = 0;
+  let selectedOpt = null;
+  let answered = false;
+  let userAnswers = [];
+  let timerInterval = null;
+  let timeLeft = 20;
+
+  function showView(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('is-active'));
+    document.getElementById(id).classList.add('is-active');
+  }
+
+  function renderHome() {
+    document.getElementById('catGrid').innerHTML = categories.map(c => `
+      <div class="cat-card" data-cat="${c.id}">
+        <div class="icon">${c.icon}</div>
+        <h3>${c.name}</h3>
+        <p>${c.desc}</p>
+        <div class="meta">${c.questions} questions · ~2 min</div>
+      </div>`).join('');
+    document.querySelectorAll('.cat-card').forEach(card => {
+      card.addEventListener('click', () => startQuiz(card.dataset.cat));
+    });
+    document.getElementById('lbBody').innerHTML = leaderboard.map((row, i) => {
+      const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+      return `<tr class="${row.you ? 'is-you' : ''}"><td><span class="rank-pill ${rankClass}">${i + 1}</span></td><td>${row.name}${row.you ? ' (you)' : ''}</td><td>${row.dept}</td><td>${row.score}</td></tr>`;
+    }).join('');
+  }
+
+  function startQuiz(catId) {
+    currentCat = catId;
+    currentQIndex = 0;
+    userAnswers = [];
+    showView('viewQuiz');
+    document.getElementById('quizCatName').textContent = categories.find(c => c.id === catId).name;
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    const qs = questionBank[currentCat];
+    const q = qs[currentQIndex];
+    selectedOpt = null;
+    answered = false;
+    document.getElementById('quizQNum').textContent = `Question ${currentQIndex + 1} / ${qs.length}`;
+    document.getElementById('quizProgress').style.width = `${((currentQIndex + 1) / qs.length) * 100}%`;
+    document.getElementById('qText').textContent = q.q;
+    document.getElementById('btnNext').disabled = true;
+    document.getElementById('btnNext').textContent = currentQIndex === qs.length - 1 ? 'Finish' : 'Next ›';
+
+    const letters = ['A', 'B', 'C', 'D'];
+    document.getElementById('optList').innerHTML = q.opts.map((opt, i) => `
+      <div class="opt" data-idx="${i}"><span class="letter">${letters[i]}</span><span>${opt}</span></div>
+    `).join('');
+    document.querySelectorAll('.opt').forEach(opt => {
+      opt.addEventListener('click', () => selectOption(Number(opt.dataset.idx)));
+    });
+
+    clearInterval(timerInterval);
+    timeLeft = 20;
+    document.getElementById('quizTimer').textContent = '00:20';
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      document.getElementById('quizTimer').textContent = `00:${String(Math.max(timeLeft, 0)).padStart(2, '0')}`;
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        if (!answered) selectOption(-1);
+      }
+    }, 1000);
+  }
+
+  function selectOption(idx) {
+    if (answered) return;
+    answered = true;
+    selectedOpt = idx;
+    clearInterval(timerInterval);
+    const q = questionBank[currentCat][currentQIndex];
+    userAnswers.push({ q: q.q, chosen: idx, correct: q.correct, opts: q.opts });
+
+    document.querySelectorAll('.opt').forEach((opt, i) => {
+      opt.classList.add('is-disabled');
+      if (i === q.correct) opt.classList.add('is-correct');
+      else if (i === idx) opt.classList.add('is-wrong');
+    });
+    document.getElementById('btnNext').disabled = false;
+  }
+
+  document.getElementById('btnNext').addEventListener('click', () => {
+    const qs = questionBank[currentCat];
+    if (currentQIndex < qs.length - 1) {
+      currentQIndex++;
+      renderQuestion();
+    } else {
+      showResults();
+    }
+  });
+
+  function showResults() {
+    showView('viewResults');
+    const correctCount = userAnswers.filter(a => a.chosen === a.correct).length;
+    const total = userAnswers.length;
+    const pct = Math.round((correctCount / total) * 100);
+    document.getElementById('scoreRing').style.setProperty('--pct', pct);
+    document.getElementById('scoreNum').textContent = `${correctCount}/${total}`;
+    document.getElementById('resultTitle').textContent = pct >= 80 ? 'Great work! 🎉' : pct >= 50 ? 'Quiz complete!' : 'Keep practising!';
+    document.getElementById('resultSub').textContent = pct >= 80
+      ? 'You clearly know this area well.'
+      : pct >= 50
+      ? 'Solid effort — review the ones you missed below.'
+      : 'Have another look at the policy docs and retake when ready.';
+
+    document.getElementById('reviewList').innerHTML = userAnswers.map(a => {
+      const gotIt = a.chosen === a.correct;
+      const chosenText = a.chosen === -1 ? 'No answer (time up)' : a.opts[a.chosen];
+      return `<div class="review-item">
+        <div class="rq">${a.q}</div>
+        <div class="ra ${gotIt ? 'correct' : 'wrong'}">${gotIt ? '✓ Correct' : '✕ Your answer: ' + chosenText}</div>
+        ${!gotIt ? `<div class="ra correct">✓ Correct answer: ${a.opts[a.correct]}</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('btnRetake').addEventListener('click', () => startQuiz(currentCat));
+  document.getElementById('btnHome').addEventListener('click', () => showView('viewHome'));
+
+  renderHome();
+</script>
+</body>
+</html>

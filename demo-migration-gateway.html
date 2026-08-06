@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LMS Oracle → MySQL Migration Gateway — Demo</title>
+<style>
+  :root {
+    --slate: #0f172a; --slate-2: #1e293b; --accent: #0ea5e9; --oracle: #f43f5e; --mysql: #0891b2; --green: #16a34a; --amber: #d97706;
+    --bg: #f1f5f9; --panel: #ffffff; --border: #e2e8f0; --text: #0f172a; --text-dim: #64748b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); }
+
+  .topbar { background: linear-gradient(90deg, var(--slate), var(--slate-2)); color: #fff; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .topbar__brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+  .topbar__brand .logo { width: 30px; height: 30px; border-radius: 6px; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+  .demo-badge { background: rgba(14,165,233,0.15); color: #7dd3fc; border: 1px solid rgba(14,165,233,0.4); padding: 3px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+
+  .flow-row { display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 22px; }
+  .flow-node { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 22px; text-align: center; min-width: 150px; }
+  .flow-node .db-icon { font-size: 1.4rem; }
+  .flow-node .db-name { font-weight: 700; font-size: 0.86rem; margin-top: 4px; }
+  .flow-node .db-sub { font-size: 0.72rem; color: var(--text-dim); }
+  .flow-node.oracle { border-top: 3px solid var(--oracle); }
+  .flow-node.mysql { border-top: 3px solid var(--mysql); }
+  .flow-arrow { font-size: 1.4rem; color: var(--accent); }
+
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .stat-card .num { font-size: 1.5rem; font-weight: 800; color: var(--slate); }
+  .stat-card .lbl { font-size: 0.74rem; color: var(--text-dim); font-weight: 600; margin-top: 2px; }
+
+  .panel-box { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 18px; }
+  .panel-box h3 { margin: 0 0 4px; font-size: 0.95rem; }
+  .panel-box .sub { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 14px; }
+
+  .btn-run { background: var(--slate); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 0.84rem; cursor: pointer; }
+  .btn-run:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+  table.mig-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 14px; }
+  table.mig-table th { text-align: left; color: var(--text-dim); font-weight: 600; padding: 8px 10px; border-bottom: 2px solid var(--border); font-size: 0.7rem; text-transform: uppercase; }
+  table.mig-table td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
+  table.mig-table tr:last-child td { border-bottom: none; }
+  .mini-bar-track { width: 100%; height: 6px; border-radius: 999px; background: var(--border); overflow: hidden; }
+  .mini-bar-fill { height: 100%; background: linear-gradient(90deg, var(--oracle), var(--mysql)); width: 0%; transition: width 0.5s ease; }
+  .row-status { font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+  .row-status.pending { background: #f1f5f9; color: #64748b; }
+  .row-status.running { background: #e0f2fe; color: #0369a1; }
+  .row-status.ok { background: #dcfce7; color: #166534; }
+  .row-status.mismatch { background: #fef2f2; color: #b91c1c; }
+
+  .speed-compare { display: flex; gap: 16px; }
+  .speed-col { flex: 1; }
+  .speed-col .label { font-size: 0.78rem; font-weight: 700; margin-bottom: 6px; }
+  .speed-track { height: 26px; border-radius: 6px; background: var(--border); overflow: hidden; position: relative; }
+  .speed-fill { height: 100%; display: flex; align-items: center; padding-left: 8px; color: #fff; font-size: 0.72rem; font-weight: 700; }
+  .speed-fill.slow { background: var(--oracle); width: 100%; }
+  .speed-fill.fast { background: var(--green); width: 14%; }
+
+  .log-box {
+    background: #0b1220; color: #a3e635; font-family: 'Consolas', monospace; font-size: 0.78rem;
+    border-radius: 8px; padding: 14px 16px; height: 170px; overflow-y: auto; line-height: 1.6;
+  }
+  .log-box .dim { color: #64748b; }
+  .log-box .ok { color: #4ade80; }
+  .log-box .warn { color: #fbbf24; }
+
+  .footnote { text-align: center; color: var(--text-dim); font-size: 0.76rem; margin: 6px 0 20px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar__brand"><div class="logo">🔀</div> LMS Oracle → MySQL Migration Gateway</div>
+  <span class="demo-badge">SANITIZED DEMO · ILLUSTRATIVE DATA ONLY</span>
+</div>
+
+<div class="wrap">
+
+  <div class="flow-row">
+    <div class="flow-node oracle"><div class="db-icon">🗄️</div><div class="db-name">Oracle · lms_db</div><div class="db-sub">15+ years historical</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node"><div class="db-icon">🐍</div><div class="db-name">Python Gateway</div><div class="db-sub">batched · threaded</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node mysql"><div class="db-icon">🗃️</div><div class="db-name">MySQL · lms_db_purge</div><div class="db-sub">validated copy</div></div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card"><div class="num">15+ yrs</div><div class="lbl">Historical Data Range</div></div>
+    <div class="stat-card"><div class="num">11</div><div class="lbl">Entity Groups Migrated</div></div>
+    <div class="stat-card"><div class="num">100%</div><div class="lbl">Row-Count Validated</div></div>
+    <div class="stat-card"><div class="num">~8x</div><div class="lbl">Faster With Batching</div></div>
+  </div>
+
+  <div class="panel-box">
+    <h3>Query Speed — Sequential vs. Batched + Threaded</h3>
+    <div class="sub">Same table, same row count — the difference is executemany() batching plus a thread pool per entity group</div>
+    <div class="speed-compare">
+      <div class="speed-col">
+        <div class="label">Row-by-row (sequential)</div>
+        <div class="speed-track"><div class="speed-fill slow">~48 min</div></div>
+      </div>
+      <div class="speed-col">
+        <div class="label">Batched inserts + threaded per table</div>
+        <div class="speed-track"><div class="speed-fill fast">~6 min</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-box">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+      <div>
+        <h3 style="margin-bottom:2px;">Migration Run</h3>
+        <div class="sub" style="margin-bottom:0;">Validates row counts across lms_db and lms_db_purge after each entity group</div>
+      </div>
+      <button class="btn-run" id="btnRun">▶ Run Migration</button>
+    </div>
+    <table class="mig-table">
+      <thead><tr><th>Entity Group</th><th>Oracle Rows</th><th>MySQL Rows</th><th style="width:140px;">Progress</th><th>Status</th></tr></thead>
+      <tbody id="migBody"></tbody>
+    </table>
+  </div>
+
+  <div class="panel-box">
+    <h3>Migration Log</h3>
+    <div class="sub">Live output from the gateway (includes session-lock recovery, a real snag hit mid-project)</div>
+    <div class="log-box" id="logBox"></div>
+  </div>
+
+  <p class="footnote">Reconstructed portfolio demo of the internal Oracle→MySQL migration gateway — entity names, row counts, and timings are illustrative, no real financial data is shown.</p>
+</div>
+
+<script>
+  const entities = [
+    { name: 'Client & Entity Masters', oracle: 284113, mysql: 0 },
+    { name: 'Debtor Account Masters', oracle: 612870, mysql: 0 },
+    { name: 'FIU Statements (EFS/DF)', oracle: 4218904, mysql: 0 },
+    { name: 'Discount & Realisation', oracle: 1904552, mysql: 0 },
+    { name: 'Credit Ratings & Sanctions', oracle: 96341, mysql: 0 },
+    { name: 'Addresses & Bank Details', oracle: 358220, mysql: 0 },
+    { name: 'Key Persons & Groups', oracle: 74902, mysql: 0 },
+    { name: 'Overdue & GST Charges', oracle: 1122870, mysql: 0 },
+  ];
+
+  function renderTable() {
+    document.getElementById('migBody').innerHTML = entities.map((e, i) => `
+      <tr data-i="${i}">
+        <td>${e.name}</td>
+        <td>${e.oracle.toLocaleString()}</td>
+        <td class="mysql-count">${e.mysql ? e.mysql.toLocaleString() : '—'}</td>
+        <td><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${e.mysql ? 100 : 0}%"></div></div></td>
+        <td class="status-cell"><span class="row-status pending">PENDING</span></td>
+      </tr>`).join('');
+  }
+  renderTable();
+
+  const logBox = document.getElementById('logBox');
+  function log(msg, cls) {
+    const line = document.createElement('div');
+    if (cls) line.className = cls;
+    line.textContent = msg;
+    logBox.appendChild(line);
+    logBox.scrollTop = logBox.scrollHeight;
+  }
+
+  document.getElementById('btnRun').addEventListener('click', function () {
+    this.disabled = true;
+    this.textContent = '⏳ Running…';
+    logBox.innerHTML = '';
+    log('$ python run_migration.py --validate', 'dim');
+    log('Connecting to Oracle (lms_db)…', 'dim');
+    log('Connecting to MySQL (lms_db_purge)…', 'dim');
+
+    let i = 0;
+    function runNext() {
+      if (i >= entities.length) {
+        log('✓ All entity groups migrated and validated — 0 mismatches.', 'ok');
+        document.getElementById('btnRun').textContent = '↺ Re-run Migration';
+        document.getElementById('btnRun').disabled = false;
+        return;
+      }
+      const e = entities[i];
+      const row = document.querySelector(`tr[data-i="${i}"]`);
+      const statusCell = row.querySelector('.status-cell');
+      const fill = row.querySelector('.mini-bar-fill');
+      statusCell.innerHTML = '<span class="row-status running">MIGRATING</span>';
+      log(`→ Migrating "${e.name}" (${e.oracle.toLocaleString()} rows, batched executemany, 4 threads)…`);
+
+      // simulate the real Oracle session-lock issue they had to handle
+      const hitLock = e.name.includes('FIU Statements');
+      const delay = hitLock ? 1400 : 700;
+
+      setTimeout(() => {
+        if (hitLock) {
+          log('  ⚠ ORA-00054: resource busy (locked session) — retrying with kill_oracle_sessions.py', 'warn');
+        }
+        fill.style.width = '100%';
+        e.mysql = e.oracle;
+        row.querySelector('.mysql-count').textContent = e.mysql.toLocaleString();
+        statusCell.innerHTML = '<span class="row-status ok">✓ VALIDATED</span>';
+        log(`  ✓ ${e.name}: ${e.oracle.toLocaleString()} = ${e.mysql.toLocaleString()} rows — match.`, 'ok');
+        i++;
+        runNext();
+      }, delay);
+    }
+    runNext();
+  });
+</script>
+</body>
+</html>

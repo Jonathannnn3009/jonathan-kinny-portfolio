@@ -111,7 +111,9 @@ if (projCarousel) {
   projCarousel.addEventListener('pointermove', (e) => {
     if (!isDragging) return;
     const dx = e.clientX - dragStartX;
-    if (Math.abs(dx) > 4) dragMoved = true;
+    // A real click always has a few px of incidental mouse movement between
+    // down and up — only treat this as an actual drag past that jitter margin.
+    if (Math.abs(dx) > 10) dragMoved = true;
     projCarousel.scrollLeft = dragStartScroll - dx;
   });
 

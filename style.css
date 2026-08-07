@@ -506,6 +506,34 @@ h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; }
 .proj-demo-row { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
 
 /* ===== PROJECT CAROUSEL ===== */
+.scroll-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-faint);
+  margin: 0 0 18px;
+}
+.scroll-hint__arrow { display: inline-block; color: var(--accent); animation: scrollHintBounce 1.6s ease-in-out infinite; }
+.scroll-hint__arrow:last-child { animation-delay: 0.15s; }
+@keyframes scrollHintBounce {
+  0%, 100% { transform: translateX(0); opacity: 0.5; }
+  50% { transform: translateX(4px); opacity: 1; }
+}
+.scroll-hint.is-dismissed { opacity: 0; height: 0; margin: 0; overflow: hidden; transition: opacity 0.3s ease, height 0.3s ease, margin 0.3s ease; }
+
+.proj-carousel-wrap { position: relative; }
+.proj-carousel-fade {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 8px;
+  width: 64px;
+  background: linear-gradient(to right, transparent, var(--bg-alt));
+  pointer-events: none;
+}
+
 .proj-carousel {
   display: flex;
   gap: 18px;

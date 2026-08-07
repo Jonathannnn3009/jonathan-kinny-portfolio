@@ -7,7 +7,7 @@
 <meta name="description" content="Portfolio of Jonathan Kinny — Data Science executive building automation, dashboards, and AI tools.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=40">
+<link rel="stylesheet" href="style.css?v=44">
 </head>
 <body>
 
@@ -276,8 +276,10 @@
       </div>
       <h2 class="panel__title">Things I've built on my own time.</h2>
       <p class="lead lead--narrow">All project links are live — have fun exploring.</p>
+      <p class="scroll-hint" id="carouselHint"><span class="scroll-hint__arrow">◂</span> drag or scroll for more <span class="scroll-hint__arrow">▸</span></p>
 
-      <div class="proj-carousel">
+      <div class="proj-carousel-wrap">
+      <div class="proj-carousel" id="projCarousel">
         <article class="proj-slide">
           <a href="https://sporteraglobal.com" target="_blank" rel="noopener" class="proj-slide__visual proj-slide__visual--1">
             <span class="proj-slide__tag">{freelance.build}</span>
@@ -332,6 +334,8 @@
           <p>SARIMA &amp; Holt-Winters price forecasting · Personal</p>
           <div class="proj-demo-row"><a href="https://www.canva.com/design/DAGPo_AMROA/IWfGbpplfSMLajKErAEjJw/view" target="_blank" rel="noopener" class="proj-link">▸ View Project ↗</a></div>
         </article>
+      </div>
+      <div class="proj-carousel-fade" aria-hidden="true"></div>
       </div>
     </section>
 
@@ -680,7 +684,7 @@
   </main>
 </div>
 
-<script src="orbital.js?v=40"></script>
-<script src="script.js?v=40"></script>
+<script src="orbital.js?v=44"></script>
+<script src="script.js?v=44"></script>
 </body>
 </html>

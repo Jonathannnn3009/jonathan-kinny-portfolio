@@ -122,6 +122,41 @@ if (projCarousel) {
   projCarousel.addEventListener('pointerup', endCarouselDrag);
   projCarousel.addEventListener('pointercancel', endCarouselDrag);
   projCarousel.addEventListener('pointerleave', endCarouselDrag);
+
+  // "drag or scroll for more" hint — only shown if there's actually more to scroll to,
+  // and dismissed for good the first time the visitor actually interacts with the carousel.
+  // Deliberately NOT keyed off the carousel's native 'scroll' event: scroll-snap settling
+  // during initial layout can fire one on its own before any real user input, which would
+  // dismiss the hint immediately on every load regardless of genuine interaction.
+  const carouselHint = document.getElementById('carouselHint');
+  if (carouselHint) {
+    let hintDismissed = false;
+    const dismissHint = () => {
+      if (hintDismissed) return;
+      hintDismissed = true;
+      carouselHint.classList.add('is-dismissed');
+      projCarousel.removeEventListener('wheel', dismissHint);
+      projCarousel.removeEventListener('pointerdown', dismissHint);
+      projCarousel.removeEventListener('touchstart', dismissHint);
+    };
+    const syncHintVisibility = () => {
+      if (hintDismissed) return;
+      const hasOverflow = projCarousel.scrollWidth > projCarousel.clientWidth + 4;
+      carouselHint.classList.toggle('is-dismissed', !hasOverflow);
+    };
+    projCarousel.addEventListener('wheel', dismissHint, { passive: true });
+    projCarousel.addEventListener('pointerdown', dismissHint, { passive: true });
+    projCarousel.addEventListener('touchstart', dismissHint, { passive: true });
+    window.addEventListener('resize', syncHintVisibility);
+    // Belt-and-suspenders scheduling: readyState may already be "complete" by the time
+    // this script runs (so a 'load' listener would never fire), and even then the very
+    // first synchronous measurement can undercount before webfonts/layout fully settle.
+    syncHintVisibility();
+    requestAnimationFrame(() => requestAnimationFrame(syncHintVisibility));
+    window.addEventListener('load', syncHintVisibility);
+    setTimeout(syncHintVisibility, 500);
+    setTimeout(syncHintVisibility, 1500);
+  }
 }
 
 // Contact form -> sends directly via Formspree; falls back to mailto if that fails

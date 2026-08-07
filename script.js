@@ -94,14 +94,15 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 const projCarousel = document.querySelector('.proj-carousel');
 if (projCarousel) {
   let isDragging = false;
-  let dragMoved = false;
   let dragStartX = 0;
   let dragStartScroll = 0;
 
   projCarousel.addEventListener('pointerdown', (e) => {
-    if (e.pointerType !== 'mouse') return;
+    // A press that starts on a link is always left alone as a normal link
+    // interaction — never intercepted as a drag, so there's no click-vs-drag
+    // guess to get wrong and no way this can end up swallowing the click.
+    if (e.pointerType !== 'mouse' || e.target.closest('a')) return;
     isDragging = true;
-    dragMoved = false;
     dragStartX = e.clientX;
     dragStartScroll = projCarousel.scrollLeft;
     projCarousel.classList.add('is-dragging');
@@ -111,9 +112,6 @@ if (projCarousel) {
   projCarousel.addEventListener('pointermove', (e) => {
     if (!isDragging) return;
     const dx = e.clientX - dragStartX;
-    // A real click always has a few px of incidental mouse movement between
-    // down and up — only treat this as an actual drag past that jitter margin.
-    if (Math.abs(dx) > 10) dragMoved = true;
     projCarousel.scrollLeft = dragStartScroll - dx;
   });
 
@@ -124,11 +122,6 @@ if (projCarousel) {
   projCarousel.addEventListener('pointerup', endCarouselDrag);
   projCarousel.addEventListener('pointercancel', endCarouselDrag);
   projCarousel.addEventListener('pointerleave', endCarouselDrag);
-
-  // Swallow the click that follows a drag so "View Project" links don't fire accidentally
-  projCarousel.addEventListener('click', (e) => {
-    if (dragMoved) { e.preventDefault(); e.stopPropagation(); }
-  }, true);
 }
 
 // Contact form -> sends directly via Formspree; falls back to mailto if that fails

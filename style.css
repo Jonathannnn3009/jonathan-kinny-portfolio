@@ -835,8 +835,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; }
   z-index: 1;
   width: 100%;
   max-width: 600px;
-  height: 375px;
-  margin: 0 auto 44px;
+  height: 460px;
+  margin: 0 auto 70px;
 }
 .orbital-anchor {
   position: absolute;
@@ -1009,7 +1009,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; }
 }
 
 @media (max-width: 560px) {
-  .orbital-scene { height: 260px; max-width: 320px; }
+  .orbital-scene { height: 300px; max-width: 320px; margin-bottom: 60px; }
   .status-bar { border-radius: var(--radius); text-align: left; }
 }
 

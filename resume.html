@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Jonathan Kinny - Resume</title>
 <style>
-  @page { size: A4; margin: 10mm 14mm; }
+  @page { size: A4; margin: 8mm 14mm; }
   * { box-sizing: border-box; }
   html, body {
     margin: 0; padding: 0;
@@ -16,13 +16,13 @@
     width: 210mm;
     min-height: 297mm;
     margin: 0 auto;
-    padding: 10mm 14mm;
+    padding: 8mm 14mm;
   }
   .name {
-    font-size: 26pt;
+    font-size: 25pt;
     font-weight: 700;
     color: #B8860B;
-    margin: 0 0 2pt;
+    margin: 0 0 1.5pt;
     letter-spacing: 0.3pt;
   }
   .title {
@@ -30,7 +30,7 @@
     font-size: 11.5pt;
     font-weight: 700;
     color: #7B2D3E;
-    margin: 0 0 6pt;
+    margin: 0 0 5pt;
   }
   .header {
     display: flex;
@@ -45,27 +45,27 @@
     text-align: right;
     color: #1a1a1a;
     padding-top: 4pt;
-    line-height: 1.9;
+    line-height: 1.55;
     white-space: nowrap;
   }
   .summary {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 9pt;
     color: #444;
-    line-height: 1.4;
+    line-height: 1.32;
     margin: 0;
   }
   .rule {
     border: none;
     border-top: 2pt solid #B8860B;
-    margin: 7pt 0 9pt;
+    margin: 5pt 0 6pt;
   }
   .body {
     display: flex;
     gap: 26pt;
     align-items: flex-start;
   }
-  .col-left { flex: 1.72; min-width: 0; }
+  .col-left { flex: 1.5; min-width: 0; }
   .col-right { flex: 1; min-width: 0; }
 
   h2.section {
@@ -74,11 +74,11 @@
     font-weight: 700;
     color: #1a1a1a;
     letter-spacing: 0.4pt;
-    margin: 0 0 5pt;
+    margin: 0 0 4pt;
     padding-bottom: 2pt;
     border-bottom: 1pt solid #B8860B;
   }
-  h2.section:not(:first-child) { margin-top: 9pt; }
+  h2.section:not(:first-child) { margin-top: 5pt; }
   h2.section::before {
     content: "\25A0 ";
     color: #7B2D3E;
@@ -89,7 +89,7 @@
     font-family: Arial, Helvetica, sans-serif;
     font-size: 10pt;
     font-weight: 700;
-    margin: 5pt 0 1pt;
+    margin: 4pt 0 1pt;
   }
   .job-org {
     font-family: Arial, Helvetica, sans-serif;
@@ -102,7 +102,7 @@
     font-family: Arial, Helvetica, sans-serif;
     font-size: 8.3pt;
     color: #666;
-    margin: 0 0 2.5pt;
+    margin: 0 0 2pt;
   }
   ul.bullets {
     margin: 0 0 1pt;
@@ -110,11 +110,11 @@
     font-family: Arial, Helvetica, sans-serif;
     font-size: 8.3pt;
     color: #222;
-    line-height: 1.28;
+    line-height: 1.22;
   }
-  ul.bullets li { margin-bottom: 2.5pt; padding-left: 1pt; }
+  ul.bullets li { margin-bottom: 1.4pt; padding-left: 1pt; }
 
-  .edu-item { margin-top: 5pt; }
+  .edu-item { margin-top: 4pt; }
   .edu-degree {
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 700;
@@ -137,25 +137,25 @@
   .skill-line {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 8.3pt;
-    line-height: 1.32;
-    margin: 0 0 4.5pt;
+    line-height: 1.24;
+    margin: 0 0 3pt;
     color: #222;
   }
   .skill-line b { color: #1a1a1a; }
 
-  .proj { margin-top: 5pt; }
+  .proj { margin-top: 2.5pt; }
   .proj-name {
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 700;
     font-size: 9pt;
-    margin: 0 0 1pt;
+    margin: 0 0 0.5pt;
   }
   .proj-desc {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 8pt;
     color: #444;
     margin: 0;
-    line-height: 1.25;
+    line-height: 1.15;
   }
 
   ul.cert-list {
@@ -164,17 +164,21 @@
     font-family: Arial, Helvetica, sans-serif;
     font-size: 8pt;
     color: #222;
-    line-height: 1.4;
+    line-height: 1.28;
   }
-  ul.cert-list li { margin-bottom: 1.5pt; }
+  ul.cert-list li { margin-bottom: 1pt; }
   ul.cert-list span { color: #666; font-style: italic; }
 
   .lang-line {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 8.3pt;
-    margin: 0 0 3pt;
+    margin: 0 0 2pt;
     color: #222;
   }
+
+  .stat-row { display: flex; gap: 26pt; margin: 4pt 0 0; }
+  .stat-item .num { font-size: 15pt; font-weight: 700; color: #B8860B; font-family: Arial, Helvetica, sans-serif; line-height: 1.1; }
+  .stat-item .lbl { font-size: 7.3pt; color: #666; font-family: Arial, Helvetica, sans-serif; text-transform: uppercase; letter-spacing: 0.3pt; }
 
   a { color: inherit; text-decoration: none; border-bottom: 0.75pt solid #B8860B; }
   .header-right a { border-bottom-color: rgba(26,26,26,0.35); }
@@ -188,7 +192,12 @@
       <div class="header-left">
         <p class="name">Jonathan Kinny</p>
         <p class="title">Data Analyst, Automation &amp; Full-Stack Engineer</p>
-        <p class="summary">Data Analyst, Automation &amp; Full-Stack Engineer with 1.8+ years building internal AI assistants, financial dashboards and automation tools across HR, IT, Credit, Operations, Debt, Legal and Audit. Skilled at turning manual, spreadsheet- and email-driven processes into auditable systems, combining Flask backends, React front ends, SQL/Oracle data pipelines, OCR &amp; NLP automation, Power BI dashboards and predictive modelling.</p>
+        <p class="summary">Data Analyst, Automation &amp; Full-Stack Engineer with 1.9+ years building internal AI assistants, financial dashboards and automation tools across HR, IT, Credit, Operations, Debt, Legal and Audit. Skilled at turning manual, spreadsheet- and email-driven processes into auditable systems, combining Flask backends, React front ends, SQL/Oracle data pipelines, OCR &amp; NLP automation, Power BI dashboards and predictive modelling.</p>
+        <div class="stat-row">
+          <div class="stat-item"><div class="num">13+</div><div class="lbl">Internal Tools Shipped</div></div>
+          <div class="stat-item"><div class="num">6</div><div class="lbl">Departments Automated</div></div>
+          <div class="stat-item"><div class="num">95%</div><div class="lbl">Task-Time Reduction (SARA)</div></div>
+        </div>
       </div>
       <div class="header-right">
         <a href="mailto:jonathankinny3009@gmail.com">jonathankinny3009@gmail.com</a><br>
@@ -295,6 +304,13 @@
           <li>Data Visualization, <span>Tata (Forage)</span></li>
           <li>Data Analytics Job Simulation, <span>KPMG AU (Forage)</span></li>
           <li>Introduction to Data Studio, <span>Google Analytics</span></li>
+        </ul>
+
+        <h2 class="section">Co-Curricular</h2>
+        <ul class="cert-list">
+          <li>Event Manager, <span>large-scale college events</span></li>
+          <li>Vice President, <span>Youth Group</span></li>
+          <li>Social Media Coordinator, <span>digital presence &amp; content strategy</span></li>
         </ul>
 
         <h2 class="section">Languages</h2>

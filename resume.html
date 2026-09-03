@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Jonathan Kinny - Resume</title>
 <style>
-  @page { size: A4; margin: 8mm 14mm; }
+  @page { size: A4; margin: 12mm 16mm; }
   * { box-sizing: border-box; }
   html, body {
     margin: 0; padding: 0;
@@ -16,21 +16,21 @@
     width: 210mm;
     min-height: 297mm;
     margin: 0 auto;
-    padding: 8mm 14mm;
+    padding: 12mm 16mm;
   }
   .name {
-    font-size: 25pt;
+    font-size: 27pt;
     font-weight: 700;
     color: #B8860B;
-    margin: 0 0 1.5pt;
+    margin: 0 0 3pt;
     letter-spacing: 0.3pt;
   }
   .title {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 11.5pt;
+    font-size: 12.5pt;
     font-weight: 700;
     color: #7B2D3E;
-    margin: 0 0 5pt;
+    margin: 0 0 7pt;
   }
   .header {
     display: flex;
@@ -41,144 +41,144 @@
   .header-right {
     flex: 1;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 9.5pt;
+    font-size: 10pt;
     text-align: right;
     color: #1a1a1a;
     padding-top: 4pt;
-    line-height: 1.55;
+    line-height: 1.7;
     white-space: nowrap;
   }
   .summary {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 9.5pt;
     color: #444;
-    line-height: 1.32;
+    line-height: 1.45;
     margin: 0;
   }
   .rule {
     border: none;
     border-top: 2pt solid #B8860B;
-    margin: 5pt 0 6pt;
+    margin: 8pt 0 10pt;
   }
   .body {
     display: flex;
-    gap: 26pt;
+    gap: 28pt;
     align-items: flex-start;
   }
-  .col-left { flex: 1.5; min-width: 0; }
+  .col-left { flex: 1.65; min-width: 0; }
   .col-right { flex: 1; min-width: 0; }
 
   h2.section {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 11pt;
+    font-size: 12pt;
     font-weight: 700;
     color: #1a1a1a;
     letter-spacing: 0.4pt;
-    margin: 0 0 4pt;
-    padding-bottom: 2pt;
+    margin: 0 0 7pt;
+    padding-bottom: 3pt;
     border-bottom: 1pt solid #B8860B;
   }
-  h2.section:not(:first-child) { margin-top: 5pt; }
+  h2.section:not(:first-child) { margin-top: 12pt; }
   h2.section::before {
     content: "\25A0 ";
     color: #7B2D3E;
-    font-size: 8pt;
+    font-size: 9pt;
   }
 
   .job-role {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 10pt;
+    font-size: 11pt;
     font-weight: 700;
-    margin: 4pt 0 1pt;
+    margin: 9pt 0 2pt;
   }
   .job-org {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 9.5pt;
     font-style: italic;
     color: #7B2D3E;
-    margin: 0 0 1pt;
+    margin: 0 0 2pt;
   }
   .job-meta {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 8.3pt;
+    font-size: 8.7pt;
     color: #666;
-    margin: 0 0 2pt;
+    margin: 0 0 4pt;
   }
   ul.bullets {
-    margin: 0 0 1pt;
-    padding-left: 12pt;
+    margin: 0 0 2pt;
+    padding-left: 13pt;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 8.3pt;
+    font-size: 8.8pt;
     color: #222;
-    line-height: 1.22;
+    line-height: 1.38;
   }
-  ul.bullets li { margin-bottom: 1.4pt; padding-left: 1pt; }
+  ul.bullets li { margin-bottom: 5pt; padding-left: 1pt; }
 
-  .edu-item { margin-top: 4pt; }
+  .edu-item { margin-top: 9pt; }
   .edu-degree {
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 700;
-    font-size: 10pt;
-    margin: 0 0 1pt;
+    font-size: 11pt;
+    margin: 0 0 2pt;
   }
   .edu-org {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 9pt;
+    font-size: 9.5pt;
     color: #7B2D3E;
-    margin: 0 0 1pt;
+    margin: 0 0 2pt;
   }
   .edu-meta {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 8.5pt;
+    font-size: 8.7pt;
     color: #666;
     margin: 0;
   }
 
   .skill-line {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 8.3pt;
-    line-height: 1.24;
-    margin: 0 0 3pt;
+    font-size: 8.8pt;
+    line-height: 1.4;
+    margin: 0 0 7pt;
     color: #222;
   }
   .skill-line b { color: #1a1a1a; }
 
-  .proj { margin-top: 2.5pt; }
+  .proj { margin-top: 9pt; }
   .proj-name {
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 700;
-    font-size: 9pt;
-    margin: 0 0 0.5pt;
+    font-size: 9.5pt;
+    margin: 0 0 2pt;
   }
   .proj-desc {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 8pt;
+    font-size: 8.5pt;
     color: #444;
     margin: 0;
-    line-height: 1.15;
+    line-height: 1.35;
   }
 
   ul.cert-list {
     margin: 0;
-    padding-left: 11pt;
+    padding-left: 12pt;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 8pt;
+    font-size: 8.5pt;
     color: #222;
-    line-height: 1.28;
+    line-height: 1.4;
   }
-  ul.cert-list li { margin-bottom: 1pt; }
+  ul.cert-list li { margin-bottom: 3pt; }
   ul.cert-list span { color: #666; font-style: italic; }
 
   .lang-line {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 8.3pt;
-    margin: 0 0 2pt;
+    font-size: 8.8pt;
+    margin: 0 0 4pt;
     color: #222;
   }
 
-  .stat-row { display: flex; gap: 26pt; margin: 4pt 0 0; }
-  .stat-item .num { font-size: 15pt; font-weight: 700; color: #B8860B; font-family: Arial, Helvetica, sans-serif; line-height: 1.1; }
-  .stat-item .lbl { font-size: 7.3pt; color: #666; font-family: Arial, Helvetica, sans-serif; text-transform: uppercase; letter-spacing: 0.3pt; }
+  .stat-row { display: flex; gap: 28pt; margin: 8pt 0 0; }
+  .stat-item .num { font-size: 16pt; font-weight: 700; color: #B8860B; font-family: Arial, Helvetica, sans-serif; line-height: 1.1; }
+  .stat-item .lbl { font-size: 7.5pt; color: #666; font-family: Arial, Helvetica, sans-serif; text-transform: uppercase; letter-spacing: 0.3pt; }
 
   a { color: inherit; text-decoration: none; border-bottom: 0.75pt solid #B8860B; }
   .header-right a { border-bottom-color: rgba(26,26,26,0.35); }
@@ -192,7 +192,7 @@
       <div class="header-left">
         <p class="name">Jonathan Kinny</p>
         <p class="title">Data Analyst, Automation &amp; Full-Stack Engineer</p>
-        <p class="summary">Data Analyst, Automation &amp; Full-Stack Engineer with 1.9+ years building internal AI assistants, financial dashboards and automation tools across HR, IT, Credit, Operations, Debt, Legal and Audit. Skilled at turning manual, spreadsheet- and email-driven processes into auditable systems, combining Flask backends, React front ends, SQL/Oracle data pipelines, OCR &amp; NLP automation, Power BI dashboards and predictive modelling.</p>
+        <p class="summary">Data Analyst, Automation &amp; Full-Stack Engineer with 1.9+ years building internal AI assistants, financial dashboards and automation tools for a factoring and lending business, across HR, IT, Credit, Operations, Debt, Legal and Audit. Comfortable owning a problem end to end: gathering requirements from non-technical department heads, designing the data model, building the Flask/React application and shipping something people use daily instead of falling back on spreadsheets and email chains. Combines Flask backends, React front ends, SQL/Oracle data pipelines, OCR &amp; NLP automation, Power BI dashboards and predictive modelling.</p>
         <div class="stat-row">
           <div class="stat-item"><div class="num">13+</div><div class="lbl">Internal Tools Shipped</div></div>
           <div class="stat-item"><div class="num">6</div><div class="lbl">Departments Automated</div></div>
@@ -219,15 +219,19 @@
         <p class="job-org">State Bank of India (Factoring)</p>
         <p class="job-meta">Apr 2025 - Present &nbsp;·&nbsp; Mumbai, India</p>
         <ul class="bullets">
-          <li>Built <a href="sara_portfolio_demo.html" target="_blank" rel="noopener">SARA (SBI Factors AI Research Assistant)</a>, a Flask-based internal AI assistant integrating department-wise policy databases, a DB querying engine, OCR &amp; NLP pipelines and automated email summaries, cutting task completion time by 95% across 6 departments.</li>
-          <li>Designed the <a href="demo-sso-hub.html" target="_blank" rel="noopener">SBI Factors Hub</a>, a single sign-on portal consolidating 10+ internal applications (Salesforce, DMS, TMS, HRMS, LOS and more) with card-based navigation and search autocomplete.</li>
-          <li>Built a <a href="demo-lms-dashboard.html" target="_blank" rel="noopener">Power BI executive dashboard</a> tracking FIU Outstanding, Turnover and NPA metrics across product and branch dimensions using custom DAX measures.</li>
+          <li>Built <a href="sara_portfolio_demo.html" target="_blank" rel="noopener">SARA (SBI Factors AI Research Assistant)</a>, a Flask-based internal AI assistant integrating department-wise JSON policy databases, a DB querying engine, file conversion tools, OCR &amp; NLP pipelines and an automated email summary module, with a React animated login page. Automated workflows across 6 departments and cut task completion time by 95%; live in production daily.</li>
+          <li>Designed the <a href="demo-sso-hub.html" target="_blank" rel="noopener">SBI Factors Hub</a>, a single sign-on portal consolidating 10+ internal applications (Salesforce, DMS, TMS, HRMS, LOS, Factorin, BoardPAC and Quest2Travel) with card-based navigation, search autocomplete and an Appreciation Corner for employee recognition.</li>
+          <li>Built a <a href="demo-lms-dashboard.html" target="_blank" rel="noopener">Power BI executive dashboard</a> tracking FIU Outstanding, Turnover and NPA metrics across product and branch dimensions using custom DAX measures, giving leadership a single real-time view of portfolio performance.</li>
           <li>Analysed historical SMA trend charts for a recurring client, identifying seasonal payment-default peaks and recurring day-of-month lapse patterns, giving the Debt Department early-warning visibility into repeat SMA classification behaviour.</li>
-          <li>Built the <a href="demo-sma-tracker.html" target="_blank" rel="noopener">SMA Report Management System</a> (Flask + SQLite) for the Debt Department, automating daily entry, currency-wise reporting and reminder workflows.</li>
-          <li>Developed an <a href="demo-ocr-validator.html" target="_blank" rel="noopener">OCR-based Invoice-PO Validator</a> integrated into SARA and ran a vendor ROI evaluation between two OCR providers for leadership.</li>
-          <li>Built the <a href="demo-audit-tracker.html" target="_blank" rel="noopener">Audit Queries Tracker</a> (Flask + MySQL) with role-based access, automatic email notifications and a multi-level SLA escalation matrix.</li>
-          <li>Led a large-scale Oracle to MySQL migration of the lending management system, building a Python gateway to migrate 15+ years of historical financial data with full validation.</li>
-          <li>Delivered additional internal tools including a <a href="demo-legal-tracker.html" target="_blank" rel="noopener">Legal Cases Tracker</a>, an SMA Status Tracker, an employee quiz platform and PDF automation utilities; conducted FY24-25 risk analysis identifying redundant PRR clients.</li>
+          <li>Built the <a href="demo-sma-tracker.html" target="_blank" rel="noopener">SMA Report Management System</a> (Flask + SQLite) for the Debt Department, replacing an entirely manual tracking process with daily entry workflows, currency-wise report generation, automated reminders and historical lookup; now used in daily operations.</li>
+          <li>Developed an <a href="demo-ocr-validator.html" target="_blank" rel="noopener">OCR-based Invoice-PO Validator</a> integrated into SARA to replace manual invoice-to-PO matching for the Accounts team and ran a full vendor ROI evaluation between two OCR providers delivered to leadership.</li>
+          <li>Built the <a href="demo-audit-tracker.html" target="_blank" rel="noopener">Audit Queries Tracker</a> (Flask + MySQL) to move audit query management off email, with role-based access, automatic email notifications, a multi-level SLA escalation matrix and a full audit trail.</li>
+          <li>Led a large-scale <a href="demo-migration-gateway.html" target="_blank" rel="noopener">Oracle to MySQL Migration Gateway</a> for the lending management system, building a Python gateway that connected both databases simultaneously to migrate 15+ years of historical financial data, handling type mapping, transformation and error handling with full validation.</li>
+          <li>Built a dedicated <a href="demo-sma-status-tracker.html" target="_blank" rel="noopener">SMA Status Tracker</a> for the Debt Department to monitor which client buckets are deteriorating over time, used daily for client-level analysis and portfolio health monitoring.</li>
+          <li>Built the <a href="demo-legal-tracker.html" target="_blank" rel="noopener">Legal Cases Tracker</a> (Flask + MySQL) for the Legal Department to log cases, update status, record hearing dates and outcomes and access full case history, replacing manual registers and scattered spreadsheets as the single source of truth for litigation.</li>
+          <li>Built the <a href="demo-quiz-hub.html" target="_blank" rel="noopener">SBI Factors Quiz Hub</a>, an internal employee quiz platform in Flask for training and knowledge assessment across departments, with category selection, timed questions, scoring and a department leaderboard.</li>
+          <li>Built a Python-based PDF Tools Suite for compression and splitting, used across departments for document management workflows.</li>
+          <li>Conducted risk analysis for FY24-25, developed systematic workflow representations for management, designed reports for the LMS application and identified redundant PRR clients through data analysis.</li>
         </ul>
 
         <p class="job-role">Risk Analyst Intern</p>
@@ -273,27 +277,27 @@
         <h2 class="section">Personal Projects</h2>
         <div class="proj">
           <p class="proj-name"><a href="https://sporteraglobal.com" target="_blank" rel="noopener">Football 5 Association Website ↗</a></p>
-          <p class="proj-desc">Team registrations, match management &amp; payments · Freelance build (Flask/React).</p>
+          <p class="proj-desc">Freelance web application (Flask/React) for a 5-a-side football association, handling team registrations, match management and online payments.</p>
         </div>
         <div class="proj">
           <p class="proj-name"><a href="https://www.canva.com/design/DAGO2wbOBQE/2FSkKDKHYnYPT9Y2qJRbYQ/view" target="_blank" rel="noopener">Premium Pricing ↗</a></p>
-          <p class="proj-desc">Modelled health insurance premiums and profit margins using regression on calculated projections.</p>
+          <p class="proj-desc">Modelled health insurance premiums and profit margins using regression analysis on calculated actuarial projections.</p>
         </div>
         <div class="proj">
           <p class="proj-name"><a href="https://www.canva.com/design/DAGQj6QD2RA/yBa8-wPq-P1DrNsichPZJg/view" target="_blank" rel="noopener">Classmate Akinator ↗</a></p>
-          <p class="proj-desc">Python decision-tree guessing game (Tkinter) demonstrating classification and algorithm design.</p>
+          <p class="proj-desc">Python decision-tree guessing game built with Tkinter, demonstrating classification logic and algorithm design through an interactive question-based interface.</p>
         </div>
         <div class="proj">
           <p class="proj-name"><a href="https://canva.link/q1du9z5jeullrub" target="_blank" rel="noopener">Diabetes Prediction ↗</a></p>
-          <p class="proj-desc">Compared classifiers (Logistic Regression, Random Forest, etc.) in R; built an interactive ShinyApp risk evaluator.</p>
+          <p class="proj-desc">Compared classifiers, including Logistic Regression and Random Forest, in R for diabetes risk prediction and built an interactive ShinyApp for live risk evaluation.</p>
         </div>
         <div class="proj">
           <p class="proj-name"><a href="https://www.canva.com/design/DAGPo_AMROA/IWfGbpplfSMLajKErAEjJw/view" target="_blank" rel="noopener">Precious Metals Forecasting ↗</a></p>
-          <p class="proj-desc">Forecasted gold, silver, platinum and palladium prices using SARIMA and Holt-Winters models.</p>
+          <p class="proj-desc">Forecasted gold, silver, platinum and palladium prices using SARIMA and Holt-Winters time-series models.</p>
         </div>
         <div class="proj">
           <p class="proj-name">Growth Loan Services, CRM &amp; Website <span style="font-weight:400;font-style:italic;color:#888;">(in development)</span></p>
-          <p class="proj-desc">CRM and company website build for Growth Loan Services · Freelance.</p>
+          <p class="proj-desc">Freelance CRM and company website build for Growth Loan Services, currently in development.</p>
         </div>
 
         <h2 class="section">Certifications</h2>

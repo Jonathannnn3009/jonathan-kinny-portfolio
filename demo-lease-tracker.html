@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lease Tracker - Demo</title>
+<style>
+  :root {
+    --deep: #3b2a14; --deep-2: #7c4a03; --accent: #b45309; --green: #15803d; --red: #b91c1c; --amber: #d97706;
+    --bg: #faf7f2; --panel: #fff; --border: #eadfce; --text: #231a0e; --dim: #7a6a55;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); }
+  .topbar { background: linear-gradient(90deg, var(--deep), var(--deep-2)); color: #fff; padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+  .logo { width: 30px; height: 30px; border-radius: 6px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+  .badge { background: rgba(255,255,255,0.15); color: #fde68a; border: 1px solid rgba(255,255,255,0.3); padding: 3px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 24px; }
+  .note { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; padding: 10px 14px; border-radius: 8px; font-size: 0.8rem; margin-bottom: 16px; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 800px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+  .kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .kpi .n { font-size: 1.45rem; font-weight: 700; color: var(--deep); } .kpi .l { font-size: 0.7rem; color: var(--dim); text-transform: uppercase; }
+  .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { padding: 6px 13px; border-radius: 999px; border: 1px solid var(--border); background: #fff; font-size: 0.8rem; cursor: pointer; }
+  .chip.on { background: var(--deep-2); color: #fff; border-color: var(--deep-2); }
+  .btn { background: var(--deep-2); color: #fff; border: 0; padding: 9px 15px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+  .grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 960px) { .grid { grid-template-columns: 1fr; } }
+  .box { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 16px; }
+  .box h3 { margin: 0; padding: 13px 16px; font-size: 0.93rem; border-bottom: 1px solid var(--border); background: #fffcf7; }
+  .pad { padding: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th { text-align: left; color: var(--dim); font-size: 0.68rem; text-transform: uppercase; padding: 9px 12px; border-bottom: 2px solid var(--border); background: #fffcf7; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); cursor: pointer; }
+  tr:hover td { background: #fff8ec; } tr.sel td { background: #feefd2; }
+  .tag { padding: 3px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; }
+  .active { background: #dcfce7; color: #166534; } .expiring { background: #fef3c7; color: #92400e; } .expired { background: #fee2e2; color: #991b1b; }
+  .num { text-align: right; }
+  .form { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .form label { font-size: 0.68rem; color: var(--dim); text-transform: uppercase; display: block; margin-bottom: 3px; }
+  .form input { width: 100%; padding: 7px 9px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.82rem; }
+  .sched { font-size: 0.78rem; }
+  .sched div { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed var(--border); }
+  .empty { color: var(--dim); font-size: 0.82rem; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><div class="logo">LT</div> Lease Tracker <span class="badge">DEMO - SAMPLE DATA</span></div>
+  <div style="font-size:0.8rem;opacity:0.85">Accounts Department</div>
+</div>
+
+<div class="wrap">
+  <div class="note">Illustrative prototype with fictional leases. Click a row to see its rent schedule with annual escalation. Add a new lease to see the register, totals and renewal alerts update. Statuses are calculated from today's date.</div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="toolbar">
+    <div class="chips" id="chips"></div>
+    <button class="btn" id="toggleForm">+ Add lease</button>
+  </div>
+
+  <div class="box" id="formBox" style="display:none">
+    <h3>New lease</h3>
+    <div class="pad">
+      <div class="form">
+        <div><label>Premises / asset</label><input id="fPrem" value="Branch office, Sample City"></div>
+        <div><label>Lessor</label><input id="fLessor" value="Sample Realty Pvt Ltd"></div>
+        <div><label>Start date</label><input type="date" id="fStart"></div>
+        <div><label>End date</label><input type="date" id="fEnd"></div>
+        <div><label>Monthly rent (INR)</label><input type="number" id="fRent" value="125000"></div>
+        <div><label>Annual escalation (%)</label><input type="number" id="fEsc" value="5"></div>
+        <div><label>Security deposit (INR)</label><input type="number" id="fDep" value="750000"></div>
+        <div style="display:flex;align-items:flex-end"><button class="btn" id="fSave">Save lease</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="box">
+      <h3>Lease register</h3>
+      <table>
+        <thead><tr><th>ID</th><th>Premises</th><th>Lessor</th><th>End date</th><th class="num">Monthly rent</th><th>Status</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="box">
+      <h3 id="dTitle">Lease details</h3>
+      <div class="pad" id="detail"><div class="empty">Select a lease to see its rent schedule.</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var DAY = 86400000, today = new Date();
+  function off(days) { return new Date(today.getTime() + days * DAY); }
+  function iso(x) { return x.toISOString().slice(0, 10); }
+  function inr(n) { return 'INR ' + Math.round(n).toLocaleString('en-IN'); }
+  function fd(x) { return new Date(x).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }); }
+
+  var leases = [
+    { p: 'Head office floor 4', l: 'Alpha Properties LLP', s: iso(off(-900)), e: iso(off(450)), r: 485000, esc: 5, dep: 2900000 },
+    { p: 'Regional office, North', l: 'Beta Estates Pvt Ltd', s: iso(off(-700)), e: iso(off(65)), r: 210000, esc: 6, dep: 1260000 },
+    { p: 'Branch office, West', l: 'Gamma Holdings', s: iso(off(-1200)), e: iso(off(-12)), r: 150000, esc: 5, dep: 900000 },
+    { p: 'Data centre rack space', l: 'Delta Infra Services', s: iso(off(-300)), e: iso(off(430)), r: 95000, esc: 3, dep: 285000 },
+    { p: 'Branch office, South', l: 'Epsilon Realty', s: iso(off(-400)), e: iso(off(82)), r: 128000, esc: 5, dep: 768000 }
+  ];
+  var filter = 'All', sel = -1;
+
+  function status(x) {
+    var days = (new Date(x.e) - today) / DAY;
+    return days < 0 ? 'expired' : days <= 90 ? 'expiring' : 'active';
+  }
+  function label(s) { return s === 'expiring' ? 'expiring soon' : s; }
+  function currentRent(x) {
+    var yrs = Math.max(0, Math.floor((today - new Date(x.s)) / (365.25 * DAY)));
+    return x.r * Math.pow(1 + x.esc / 100, yrs);
+  }
+
+  function render() {
+    var act = leases.filter(function (x) { return status(x) !== 'expired'; });
+    var soon = leases.filter(function (x) { return status(x) === 'expiring'; }).length;
+    var rent = act.reduce(function (a, x) { return a + currentRent(x); }, 0);
+    var dep = leases.reduce(function (a, x) { return a + x.dep; }, 0);
+    $('kpis').innerHTML =
+      '<div class="kpi"><div class="n">' + act.length + '</div><div class="l">Active leases</div></div>' +
+      '<div class="kpi"><div class="n">' + inr(rent) + '</div><div class="l">Monthly rent outflow</div></div>' +
+      '<div class="kpi"><div class="n">' + soon + '</div><div class="l">Expiring in 90 days</div></div>' +
+      '<div class="kpi"><div class="n">' + inr(dep) + '</div><div class="l">Deposits held</div></div>';
+
+    var chips = ['All', 'active', 'expiring', 'expired'];
+    $('chips').innerHTML = chips.map(function (c) { return '<span class="chip' + (filter === c ? ' on' : '') + '" data-c="' + c + '">' + (c === 'expiring' ? 'Expiring soon' : c.charAt(0).toUpperCase() + c.slice(1)) + '</span>'; }).join('');
+    Array.prototype.forEach.call($('chips').children, function (el) { el.onclick = function () { filter = el.dataset.c; render(); }; });
+
+    var h = '';
+    leases.forEach(function (x, i) {
+      var st = status(x);
+      if (filter !== 'All' && st !== filter) return;
+      h += '<tr class="' + (i === sel ? 'sel' : '') + '" data-i="' + i + '"><td>L-' + (101 + i) + '</td><td>' + x.p + '</td><td>' + x.l + '</td><td>' + fd(x.e) + '</td><td class="num">' + inr(currentRent(x)) + '</td><td><span class="tag ' + st + '">' + label(st) + '</span></td></tr>';
+    });
+    $('rows').innerHTML = h || '<tr><td colspan="6" class="empty">No leases match this filter.</td></tr>';
+    Array.prototype.forEach.call($('rows').querySelectorAll('tr[data-i]'), function (tr) { tr.onclick = function () { sel = +tr.dataset.i; render(); detail(); }; });
+  }
+
+  function detail() {
+    var x = leases[sel]; if (!x) return;
+    var st = status(x), days = Math.round((new Date(x.e) - today) / DAY);
+    $('dTitle').textContent = 'L-' + (101 + sel) + ' - ' + x.p;
+    var rows = '', base = currentRent(x);
+    for (var m = 0; m < 12; m++) {
+      var dt = new Date(today.getFullYear(), today.getMonth() + m, 1);
+      var anniv = new Date(x.s); var yrsAt = Math.max(0, Math.floor((dt - anniv) / (365.25 * DAY)));
+      var rent = x.r * Math.pow(1 + x.esc / 100, yrsAt);
+      var ended = dt > new Date(x.e);
+      rows += '<div><span>' + dt.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }) + '</span><span>' + (ended ? '<i style="color:var(--dim)">lease ended</i>' : inr(rent)) + '</span></div>';
+    }
+    $('detail').innerHTML =
+      '<div style="font-size:0.82rem;line-height:1.7;margin-bottom:10px">Lessor: <b>' + x.l + '</b><br>Term: ' + fd(x.s) + ' to ' + fd(x.e) + '<br>Escalation: ' + x.esc + '% each anniversary<br>Security deposit: ' + inr(x.dep) + '<br>' +
+      (st === 'expired' ? '<b style="color:var(--red)">Expired ' + Math.abs(days) + ' days ago. Renew or exit.</b>' : st === 'expiring' ? '<b style="color:var(--amber)">Renewal due: expires in ' + days + ' days.</b>' : 'Expires in ' + days + ' days.') + '</div>' +
+      '<div style="font-size:0.7rem;color:var(--dim);text-transform:uppercase;margin-bottom:4px">Next 12 months rent schedule</div><div class="sched">' + rows + '</div>';
+  }
+
+  $('toggleForm').onclick = function () { var b = $('formBox'); b.style.display = b.style.display === 'none' ? 'block' : 'none'; };
+  $('fStart').value = iso(today); $('fEnd').value = iso(off(1095));
+  $('fSave').onclick = function () {
+    leases.push({ p: $('fPrem').value, l: $('fLessor').value, s: $('fStart').value, e: $('fEnd').value, r: +$('fRent').value, esc: +$('fEsc').value, dep: +$('fDep').value });
+    sel = leases.length - 1; $('formBox').style.display = 'none'; render(); detail();
+  };
+  render();
+})();
+</script>
+</body>
+</html>

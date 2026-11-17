@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Provision Tracker - Demo</title>
+<style>
+  :root {
+    --deep: #134e4a; --deep-2: #0f766e; --accent: #0d9488; --green: #15803d; --red: #b91c1c; --amber: #b45309;
+    --bg: #f2f8f7; --panel: #fff; --border: #d8e8e5; --text: #12302c; --dim: #5f7f7a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); }
+  .topbar { background: linear-gradient(90deg, var(--deep), var(--deep-2)); color: #fff; padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+  .logo { width: 30px; height: 30px; border-radius: 6px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+  .badge { background: rgba(255,255,255,0.15); color: #99f6e4; border: 1px solid rgba(255,255,255,0.3); padding: 3px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+  .role { font-size: 0.8rem; display: flex; gap: 8px; align-items: center; }
+  .role select { padding: 5px 9px; border-radius: 6px; border: 0; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 24px; }
+  .note { background: #f0fdfa; border: 1px solid #99f6e4; color: #115e59; padding: 10px 14px; border-radius: 8px; font-size: 0.8rem; margin-bottom: 16px; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 800px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+  .kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .kpi .n { font-size: 1.4rem; font-weight: 700; color: var(--deep); } .kpi .l { font-size: 0.7rem; color: var(--dim); text-transform: uppercase; }
+  .grid { display: grid; grid-template-columns: 1.7fr 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 960px) { .grid { grid-template-columns: 1fr; } }
+  .box { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 16px; }
+  .box h3 { margin: 0; padding: 13px 16px; font-size: 0.93rem; border-bottom: 1px solid var(--border); background: #f8fcfb; }
+  .pad { padding: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th { text-align: right; color: var(--dim); font-size: 0.68rem; text-transform: uppercase; padding: 9px 12px; border-bottom: 2px solid var(--border); background: #f8fcfb; }
+  th:first-child, td:first-child { text-align: left; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: right; }
+  tfoot td { font-weight: 700; background: #f8fcfb; }
+  .bar { height: 8px; background: #e2f0ee; border-radius: 4px; overflow: hidden; margin-top: 4px; }
+  .bar i { display: block; height: 100%; background: var(--accent); }
+  .form label { font-size: 0.68rem; color: var(--dim); text-transform: uppercase; display: block; margin: 8px 0 3px; }
+  .form input, .form select { width: 100%; padding: 7px 9px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.82rem; }
+  .btn { background: var(--deep-2); color: #fff; border: 0; padding: 9px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-top: 12px; }
+  .btn.sm { padding: 4px 10px; margin: 0; font-size: 0.72rem; }
+  .btn.alt { background: #fff; color: var(--deep-2); border: 1px solid var(--deep-2); }
+  .tag { padding: 3px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; }
+  .pending { background: #fef3c7; color: #92400e; } .approved { background: #dcfce7; color: #166534; }
+  ul.log { list-style: none; margin: 0; padding: 0; font-size: 0.78rem; max-height: 240px; overflow: auto; }
+  ul.log li { padding: 7px 0; border-bottom: 1px dashed var(--border); }
+  .none { color: var(--dim); font-style: italic; font-size: 0.8rem; }
+  td.l { text-align: left; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><div class="logo">PT</div> Provision Tracker <span class="badge">DEMO - SAMPLE DATA</span></div>
+  <div class="role">Acting as: <select id="role"><option>Maker</option><option>Checker</option></select></div>
+</div>
+
+<div class="wrap">
+  <div class="note">Illustrative prototype with fictional balances (INR lakhs). A Maker posts an addition, utilisation or write-back; a Checker approves it before it changes the closing balance. Switch role at the top right to try both sides.</div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="grid">
+    <div>
+      <div class="box">
+        <h3>Provision movement for the month</h3>
+        <table>
+          <thead><tr><th>Provision</th><th>Opening</th><th>Additions</th><th>Utilised</th><th>Written back</th><th>Closing</th></tr></thead>
+          <tbody id="rows"></tbody>
+          <tfoot id="foot"></tfoot>
+        </table>
+      </div>
+      <div class="box">
+        <h3>Entries awaiting approval</h3>
+        <div class="pad" id="queue"></div>
+      </div>
+    </div>
+    <div>
+      <div class="box">
+        <h3>Post an entry (Maker)</h3>
+        <div class="pad form">
+          <label>Provision</label><select id="eProv"></select>
+          <label>Entry type</label>
+          <select id="eType"><option value="add">Addition</option><option value="use">Utilisation</option><option value="wb">Write-back</option></select>
+          <label>Amount (INR lakhs)</label><input type="number" id="eAmt" value="10">
+          <label>Narration</label><input type="text" id="eNote" value="Month-end estimate">
+          <button class="btn" id="eSave">Submit for approval</button>
+          <div id="eMsg" class="none" style="margin-top:8px"></div>
+        </div>
+      </div>
+      <div class="box">
+        <h3>Audit trail</h3>
+        <div class="pad"><ul class="log" id="log"></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var n1 = function (x) { return x.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); };
+  var P = [
+    { n: 'Employee benefits (leave, gratuity)', o: 182.0, a: 12.0, u: 4.5, w: 0 },
+    { n: 'Audit and professional fees', o: 24.0, a: 3.0, u: 6.0, w: 0 },
+    { n: 'Performance bonus', o: 96.0, a: 20.0, u: 0, w: 0 },
+    { n: 'Legal and litigation', o: 41.0, a: 0, u: 2.5, w: 1.0 },
+    { n: 'Utilities and office expenses', o: 8.5, a: 1.2, u: 1.0, w: 0 },
+    { n: 'Other expense provisions', o: 15.0, a: 2.0, u: 0, w: 0.5 }
+  ];
+  var queue = [], logs = [], role = 'Maker', seq = 1;
+  function t() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+  function log(m) { logs.unshift(t() + ' - ' + m); $('log').innerHTML = logs.map(function (x) { return '<li>' + x + '</li>'; }).join(''); }
+  function close(p) { return p.o + p.a - p.u - p.w; }
+
+  function render() {
+    var to = 0, ta = 0, tu = 0, tw = 0, tc = 0, h = '', max = 1;
+    P.forEach(function (p) { max = Math.max(max, close(p)); });
+    P.forEach(function (p) {
+      to += p.o; ta += p.a; tu += p.u; tw += p.w; tc += close(p);
+      h += '<tr><td class="l">' + p.n + '<div class="bar"><i style="width:' + (close(p) / max * 100) + '%"></i></div></td><td>' + n1(p.o) + '</td><td>' + n1(p.a) + '</td><td>' + n1(p.u) + '</td><td>' + n1(p.w) + '</td><td><b>' + n1(close(p)) + '</b></td></tr>';
+    });
+    $('rows').innerHTML = h;
+    $('foot').innerHTML = '<tr><td class="l">Total</td><td>' + n1(to) + '</td><td>' + n1(ta) + '</td><td>' + n1(tu) + '</td><td>' + n1(tw) + '</td><td>' + n1(tc) + '</td></tr>';
+    $('kpis').innerHTML =
+      '<div class="kpi"><div class="n">' + n1(tc) + '</div><div class="l">Closing balance (lakhs)</div></div>' +
+      '<div class="kpi"><div class="n">' + n1(ta) + '</div><div class="l">Additions this month</div></div>' +
+      '<div class="kpi"><div class="n">' + n1(tu + tw) + '</div><div class="l">Utilised + written back</div></div>' +
+      '<div class="kpi"><div class="n">' + queue.length + '</div><div class="l">Pending approval</div></div>';
+    var q = queue.length ? '<table><thead><tr><th>Ref</th><th>Provision</th><th>Type</th><th>Amount</th><th>Narration</th><th></th></tr></thead><tbody>' +
+      queue.map(function (e, i) {
+        var act = role === 'Checker' ? '<button class="btn sm" data-a="ok" data-i="' + i + '">Approve</button> <button class="btn sm alt" data-a="no" data-i="' + i + '">Reject</button>' : '<span class="tag pending">awaiting Checker</span>';
+        return '<tr><td class="l">E-' + e.id + '</td><td class="l">' + P[e.p].n + '</td><td>' + ({ add: 'Addition', use: 'Utilisation', wb: 'Write-back' })[e.t] + '</td><td>' + n1(e.amt) + '</td><td class="l">' + e.note + '</td><td>' + act + '</td></tr>';
+      }).join('') + '</tbody></table>' : '<div class="none">Nothing waiting for approval.</div>';
+    $('queue').innerHTML = q;
+    Array.prototype.forEach.call($('queue').querySelectorAll('button[data-a]'), function (b) {
+      b.onclick = function () {
+        var e = queue.splice(+b.dataset.i, 1)[0];
+        if (b.dataset.a === 'ok') {
+          var key = { add: 'a', use: 'u', wb: 'w' }[e.t]; P[e.p][key] += e.amt;
+          log('Checker approved E-' + e.id + ' (' + e.t + ' ' + n1(e.amt) + ' on ' + P[e.p].n + ')');
+        } else log('Checker rejected E-' + e.id);
+        render();
+      };
+    });
+  }
+
+  P.forEach(function (p, i) { var o = document.createElement('option'); o.value = i; o.textContent = p.n; $('eProv').appendChild(o); });
+  $('role').onchange = function () { role = this.value; render(); };
+  $('eSave').onclick = function () {
+    var amt = parseFloat($('eAmt').value), p = +$('eProv').value, ty = $('eType').value;
+    if (!(amt > 0)) { $('eMsg').textContent = 'Enter an amount above zero.'; return; }
+    if ((ty === 'use' || ty === 'wb') && amt > close(P[p])) { $('eMsg').textContent = 'Amount exceeds the available closing balance of ' + n1(close(P[p])) + ' lakhs.'; return; }
+    var e = { id: 100 + seq++, p: p, t: ty, amt: amt, note: $('eNote').value };
+    queue.push(e); $('eMsg').textContent = 'Submitted as E-' + e.id + '. Switch to Checker to approve.'; log('Maker submitted E-' + e.id); render();
+  };
+  log('Month opened with sample balances'); render();
+})();
+</script>
+</body>
+</html>

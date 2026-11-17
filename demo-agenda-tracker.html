@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda Tracker - Demo</title>
+<style>
+  :root {
+    --navy: #0f3b4c; --navy-2: #155e75; --accent: #0e7490; --green: #16a34a; --amber: #b45309; --red: #b91c1c;
+    --bg: #f3f6f8; --panel: #ffffff; --border: #dde5ea; --text: #16232b; --text-dim: #64748b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); }
+  .topbar { background: linear-gradient(90deg, var(--navy), var(--navy-2)); color: #fff; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+  .logo { width: 30px; height: 30px; border-radius: 6px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+  .badge { background: rgba(255,255,255,0.15); color: #bae6fd; border: 1px solid rgba(255,255,255,0.3); padding: 3px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+  .role-pick { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  .role-pick select { padding: 6px 10px; border-radius: 6px; border: 0; font-size: 0.82rem; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 24px; }
+  .note { background: #ecfeff; border: 1px solid #a5f3fc; color: #155e75; padding: 10px 14px; border-radius: 8px; font-size: 0.8rem; margin-bottom: 16px; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 800px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+  .kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .kpi .n { font-size: 1.5rem; font-weight: 700; color: var(--navy); }
+  .kpi .l { font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.04em; }
+  .grid { display: grid; grid-template-columns: 1.7fr 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 960px) { .grid { grid-template-columns: 1fr; } }
+  .box { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 18px; }
+  .box h3 { margin: 0; padding: 14px 16px; font-size: 0.95rem; border-bottom: 1px solid var(--border); background: #fafcfd; display: flex; justify-content: space-between; align-items: center; }
+  .box .pad { padding: 14px 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th { text-align: left; color: var(--text-dim); font-size: 0.68rem; text-transform: uppercase; padding: 9px 12px; border-bottom: 2px solid var(--border); background: #fafcfd; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .tag { padding: 3px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; display: inline-block; }
+  .s-scheduled { background: #e2e8f0; color: #334155; } .s-open { background: #dbeafe; color: #1e40af; }
+  .s-draft { background: #fef3c7; color: #92400e; } .s-under-review { background: #fde68a; color: #78350f; }
+  .s-accepted { background: #d1fae5; color: #065f46; } .s-verified { background: #a7f3d0; color: #064e3b; }
+  .s-closed { background: #bbf7d0; color: #14532d; } .s-rejected, .s-withdrawn { background: #fee2e2; color: #991b1b; }
+  .s-reopen-requested { background: #ede9fe; color: #5b21b6; }
+  .act { border: 1px solid var(--accent); background: #fff; color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 0.72rem; cursor: pointer; margin: 2px 4px 2px 0; font-weight: 600; }
+  .act:hover { background: var(--accent); color: #fff; }
+  .act.danger { border-color: var(--red); color: var(--red); } .act.danger:hover { background: var(--red); color: #fff; }
+  .none { color: var(--text-dim); font-size: 0.75rem; font-style: italic; }
+  .btn { background: var(--navy); color: #fff; border: 0; padding: 9px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; margin: 0 8px 8px 0; }
+  .btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+  .btn.alt { background: #fff; color: var(--navy); border: 1px solid var(--navy); }
+  ul.log { list-style: none; margin: 0; padding: 0; font-size: 0.78rem; max-height: 260px; overflow: auto; }
+  ul.log li { padding: 8px 0; border-bottom: 1px dashed var(--border); }
+  ul.log .t { color: var(--text-dim); font-size: 0.7rem; display: block; }
+  .flow { display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.7rem; padding: 12px 16px; border-top: 1px solid var(--border); background: #fafcfd; }
+  .flow span { padding: 3px 8px; border-radius: 6px; background: #e0f2fe; color: #075985; }
+  .flow i { color: var(--text-dim); font-style: normal; }
+  select.meet { padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><div class="logo">AT</div> SBI Factors Agenda Tracker <span class="badge">DEMO - SAMPLE DATA</span></div>
+  <div class="role-pick">Viewing as:
+    <select id="role">
+      <option>CS Admin</option><option>HOD</option><option>CXO</option><option>MD/CEO</option><option>Viewer</option>
+    </select>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="note">Interactive prototype with fictional agenda items. Switch the role (top right) to see how the workflow and permissions change. Only the MD/CEO can approve reopening a closed agenda.</div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="grid">
+    <div>
+      <div class="box">
+        <h3>Agenda items
+          <select class="meet" id="meetingFilter"></select>
+        </h3>
+        <table>
+          <thead><tr><th>#</th><th>Item</th><th>Dept</th><th>Meeting</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <div class="flow">
+          <span>scheduled</span><i>&rarr;</i><span>open</span><i>&rarr;</i><span>draft</span><i>&rarr;</i><span>under review</span><i>&rarr;</i><span>accepted</span><i>&rarr;</i><span>verified</span><i>&rarr;</i><span>closed</span>
+          <i>|</i><span>rejected</span><span>withdrawn</span><span>reopen requested</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="box">
+        <h3>Agenda pack</h3>
+        <div class="pad">
+          <p style="font-size:0.78rem;color:var(--text-dim);margin-top:0">Combined PDF and Excel pack of all accepted, verified and closed items. CS Admin only.</p>
+          <button class="btn" id="genPack">Generate pack</button>
+          <button class="btn alt" id="sendPack">Send by email</button>
+          <div id="packInfo" style="font-size:0.78rem"></div>
+        </div>
+      </div>
+      <div class="box">
+        <h3>Reminders and digest</h3>
+        <div class="pad">
+          <p style="font-size:0.78rem;color:var(--text-dim);margin-top:0">Scheduled reminders go to owners of open items. A daily digest goes to CS Admin. A log table prevents duplicate sends.</p>
+          <button class="btn alt" id="digest">Simulate daily digest</button>
+          <div id="digestOut" style="font-size:0.78rem"></div>
+        </div>
+      </div>
+      <div class="box">
+        <h3>Audit log</h3>
+        <div class="pad"><ul class="log" id="log"></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var items = [
+    { id: 1, title: 'Approval of quarterly financial results', dept: 'Finance', meeting: 'Board Meeting', status: 'under review' },
+    { id: 2, title: 'Review of credit risk policy update', dept: 'Credit', meeting: 'Risk Committee', status: 'draft' },
+    { id: 3, title: 'Internal audit observations and closure status', dept: 'Audit', meeting: 'Audit Committee', status: 'accepted' },
+    { id: 4, title: 'IT roadmap and cyber-security review', dept: 'IT', meeting: 'Board Meeting', status: 'open' },
+    { id: 5, title: 'Annual HR policy changes', dept: 'HR', meeting: 'Board Meeting', status: 'scheduled' },
+    { id: 6, title: 'Large exposure monitoring report', dept: 'Risk', meeting: 'Risk Committee', status: 'verified' },
+    { id: 7, title: 'Appointment of statutory auditor', dept: 'Secretarial', meeting: 'Audit Committee', status: 'closed' },
+    { id: 8, title: 'Legal cases update', dept: 'Legal', meeting: 'Board Meeting', status: 'rejected' }
+  ];
+  var T = {
+    'scheduled': [{ l: 'Open for submission', r: ['CS Admin'], to: 'open' }],
+    'open': [{ l: 'Submit draft', r: ['HOD'], to: 'draft' }, { l: 'Withdraw', r: ['HOD'], to: 'withdrawn', d: 1 }],
+    'draft': [{ l: 'Send for review', r: ['CS Admin'], to: 'under review' }, { l: 'Withdraw', r: ['HOD'], to: 'withdrawn', d: 1 }],
+    'under review': [{ l: 'Accept', r: ['CXO'], to: 'accepted' }, { l: 'Reject', r: ['CXO'], to: 'rejected', d: 1 }],
+    'rejected': [{ l: 'Revise and resubmit', r: ['HOD'], to: 'draft' }],
+    'accepted': [{ l: 'Verify', r: ['CS Admin'], to: 'verified' }],
+    'verified': [{ l: 'Close agenda item', r: ['CS Admin'], to: 'closed' }],
+    'closed': [{ l: 'Request reopen', r: ['CS Admin'], to: 'reopen requested' }],
+    'reopen requested': [{ l: 'Approve reopen', r: ['MD/CEO'], to: 'open' }, { l: 'Decline', r: ['MD/CEO'], to: 'closed', d: 1 }],
+    'withdrawn': [{ l: 'Reopen', r: ['CS Admin'], to: 'open' }]
+  };
+  var $ = function (id) { return document.getElementById(id); };
+  var role = 'CS Admin', meeting = 'All meetings', packs = [], logs = [];
+
+  function slug(s) { return s.replace(/\s+/g, '-'); }
+  function now() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+  function log(msg) { logs.unshift({ t: now(), m: msg }); renderLog(); }
+
+  function renderKpis() {
+    var c = function (f) { return items.filter(f).length; };
+    $('kpis').innerHTML =
+      '<div class="kpi"><div class="n">' + items.length + '</div><div class="l">Total items</div></div>' +
+      '<div class="kpi"><div class="n">' + c(function (i) { return ['open', 'draft', 'under review', 'rejected'].indexOf(i.status) > -1; }) + '</div><div class="l">In progress</div></div>' +
+      '<div class="kpi"><div class="n">' + c(function (i) { return ['accepted', 'verified'].indexOf(i.status) > -1; }) + '</div><div class="l">Accepted / verified</div></div>' +
+      '<div class="kpi"><div class="n">' + c(function (i) { return i.status === 'closed'; }) + '</div><div class="l">Closed</div></div>';
+  }
+
+  function renderRows() {
+    var html = '';
+    items.filter(function (i) { return meeting === 'All meetings' || i.meeting === meeting; }).forEach(function (i) {
+      var acts = (T[i.status] || []).filter(function (a) { return a.r.indexOf(role) > -1; });
+      var btns = acts.length ? acts.map(function (a, k) {
+        return '<button class="act' + (a.d ? ' danger' : '') + '" data-id="' + i.id + '" data-k="' + k + '">' + a.l + '</button>';
+      }).join('') : '<span class="none">no action for ' + role + '</span>';
+      html += '<tr><td>' + i.id + '</td><td>' + i.title + '</td><td>' + i.dept + '</td><td>' + i.meeting +
+        '</td><td><span class="tag s-' + slug(i.status) + '">' + i.status + '</span></td><td>' + btns + '</td></tr>';
+    });
+    $('rows').innerHTML = html;
+    Array.prototype.forEach.call(document.querySelectorAll('button.act'), function (b) {
+      b.onclick = function () {
+        var it = items.filter(function (x) { return x.id == b.dataset.id; })[0];
+        var acts = (T[it.status] || []).filter(function (a) { return a.r.indexOf(role) > -1; });
+        var a = acts[+b.dataset.k];
+        log(role + ': item #' + it.id + ' ' + it.status + ' to ' + a.to);
+        it.status = a.to; renderAll();
+      };
+    });
+  }
+
+  function renderLog() {
+    $('log').innerHTML = logs.length ? logs.map(function (x) { return '<li><span class="t">' + x.t + '</span>' + x.m + '</li>'; }).join('') : '<li class="none">No activity yet. Try an action.</li>';
+  }
+
+  function packable() { return items.filter(function (i) { return ['accepted', 'verified', 'closed'].indexOf(i.status) > -1 && (meeting === 'All meetings' || i.meeting === meeting); }); }
+
+  function renderPack() {
+    var admin = role === 'CS Admin';
+    $('genPack').disabled = !admin || !packable().length;
+    $('sendPack').disabled = !admin || !packs.length;
+    $('packInfo').innerHTML = packs.length ? packs.map(function (p) { return '<div style="margin:4px 0">&#128196; ' + p.name + '.pdf + ' + p.name + '.xlsx (' + p.n + ' items)' + (p.sent ? ' <b style="color:var(--green)">sent</b>' : '') + '</div>'; }).join('') : '<span class="none">' + (admin ? 'No pack generated yet.' : 'Only CS Admin can generate or send the pack.') + '</span>';
+  }
+
+  function renderAll() { renderKpis(); renderRows(); renderPack(); }
+
+  var sel = $('meetingFilter');
+  ['All meetings', 'Board Meeting', 'Risk Committee', 'Audit Committee'].forEach(function (m) { var o = document.createElement('option'); o.textContent = m; sel.appendChild(o); });
+  sel.onchange = function () { meeting = sel.value; renderAll(); };
+  $('role').onchange = function () { role = this.value; log('Switched view to ' + role); renderAll(); };
+  $('genPack').onclick = function () {
+    var list = packable(), name = 'Agenda_Pack_' + slug(meeting === 'All meetings' ? 'All' : meeting) + '_' + (packs.length + 1);
+    packs.push({ name: name, n: list.length, sent: false }); log('CS Admin generated ' + name + ' (' + list.length + ' items)'); renderPack();
+  };
+  $('sendPack').onclick = function () {
+    var p = packs[packs.length - 1]; p.sent = true; log('CS Admin emailed ' + p.name + ' with attachments (dispatch logged)'); renderPack();
+  };
+  $('digest').onclick = function () {
+    var by = {}; items.forEach(function (i) { by[i.status] = (by[i.status] || 0) + 1; });
+    $('digestOut').innerHTML = '<div style="margin-top:8px;padding:8px;background:#f1f5f9;border-radius:6px"><b>Daily digest (preview)</b><br>' + Object.keys(by).map(function (k) { return k + ': ' + by[k]; }).join('<br>') + '<br><span class="none">Duplicate-send check: not sent earlier today</span></div>';
+    log('Daily digest generated for CS Admin');
+  };
+
+  renderLog(); renderAll();
+})();
+</script>
+</body>
+</html>

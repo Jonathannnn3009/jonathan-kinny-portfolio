@@ -45,7 +45,7 @@ toggleBtn.addEventListener('click', () => {
   const hidden = document.querySelectorAll('#sbiProjects .proj-card--hidden');
   const isHidden = getComputedStyle(hidden[0]).display === 'none';
   hidden.forEach(card => card.style.display = isHidden ? 'block' : 'none');
-  toggleBtn.textContent = isHidden ? 'Show fewer projects ↑' : 'Show all 12 projects ↓';
+  toggleBtn.textContent = isHidden ? 'Show fewer projects ↑' : 'Show all 16 projects ↓';
 });
 
 // Scrollspy — highlight the active sidebar tab as panels scroll into view

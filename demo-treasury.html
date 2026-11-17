@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Treasury Automation - Demo</title>
+<style>
+  :root {
+    --ink: #1e1b4b; --ink-2: #3730a3; --accent: #4f46e5; --green: #15803d; --red: #b91c1c; --amber: #b45309;
+    --bg: #f5f5fb; --panel: #fff; --border: #e0e0f0; --text: #1c1b2e; --dim: #6b6a85;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); }
+  .topbar { background: linear-gradient(90deg, var(--ink), var(--ink-2)); color: #fff; padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+  .logo { width: 30px; height: 30px; border-radius: 6px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+  .badge { background: rgba(255,255,255,0.15); color: #c7d2fe; border: 1px solid rgba(255,255,255,0.3); padding: 3px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 24px; }
+  .note { background: #eef2ff; border: 1px solid #c7d2fe; color: #3730a3; padding: 10px 14px; border-radius: 8px; font-size: 0.8rem; margin-bottom: 16px; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .tab { padding: 9px 16px; border-radius: 8px; border: 1px solid var(--border); background: #fff; font-size: 0.84rem; cursor: pointer; font-weight: 600; color: var(--dim); }
+  .tab.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .pane { display: none; } .pane.on { display: block; }
+  .box { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 16px; }
+  .box h3 { margin: 0; padding: 13px 16px; font-size: 0.93rem; border-bottom: 1px solid var(--border); background: #fafaff; display: flex; justify-content: space-between; align-items: center; }
+  .pad { padding: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th { text-align: right; color: var(--dim); font-size: 0.68rem; text-transform: uppercase; padding: 9px 12px; border-bottom: 2px solid var(--border); background: #fafaff; }
+  th:first-child, td:first-child { text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--border); text-align: right; }
+  tfoot td { font-weight: 700; background: #fafaff; }
+  input[type=number], input[type=text], select, textarea { padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.82rem; font-family: inherit; }
+  td input[type=number] { width: 90px; text-align: right; }
+  .pos { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .pos .big { font-size: 1.8rem; font-weight: 800; }
+  .pill { padding: 5px 14px; border-radius: 999px; font-weight: 700; font-size: 0.8rem; }
+  .surplus { background: #dcfce7; color: var(--green); } .deficit { background: #fee2e2; color: var(--red); }
+  .btn { background: var(--accent); color: #fff; border: 0; padding: 9px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-right: 8px; }
+  .btn.alt { background: #fff; color: var(--accent); border: 1px solid var(--accent); }
+  .hint { font-size: 0.8rem; color: var(--dim); margin: 10px 0 0; }
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 700px) { .kpis { grid-template-columns: 1fr; } }
+  .kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .kpi .n { font-size: 1.4rem; font-weight: 700; color: var(--ink); } .kpi .l { font-size: 0.7rem; color: var(--dim); text-transform: uppercase; }
+  .form { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 14px; }
+  @media (max-width: 700px) { .form { grid-template-columns: 1fr; } }
+  .form label { font-size: 0.72rem; color: var(--dim); display: block; margin-bottom: 4px; text-transform: uppercase; }
+  .form input, .form select { width: 100%; }
+  pre.letter { background: #fff; border: 1px dashed #a5b4fc; border-radius: 8px; padding: 18px; font-family: Georgia, serif; font-size: 0.86rem; line-height: 1.6; white-space: pre-wrap; margin: 0; }
+  .status { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; }
+  .st-pend { background: #fef3c7; color: #92400e; } .st-ok { background: #dcfce7; color: #166534; }
+  .out { background: #e0e7ff; color: #3730a3; } .redeemed { background: #e2e8f0; color: #334155; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><div class="logo">TR</div> Treasury Automation <span class="badge">DEMO - SAMPLE DATA</span></div>
+  <div style="font-size:0.8rem;opacity:0.85">Figures in millions of each account currency; fictional values</div>
+</div>
+
+<div class="wrap">
+  <div class="note">Interactive prototype with fictional banks, amounts and rates. Edit the inflow and outflow cells in the cash-flow tab to see the consolidated position and the suggested funding action update live. Rate decisions and deal negotiations stay manual by design.</div>
+
+  <div class="tabs" id="tabs">
+    <div class="tab on" data-p="cash">Daily Cash Flow</div>
+    <div class="tab" data-p="borrow">Borrowing Chart</div>
+    <div class="tab" data-p="cp">CP Register</div>
+    <div class="tab" data-p="letters">Letters</div>
+  </div>
+
+  <!-- CASH FLOW -->
+  <div class="pane on" id="cash">
+    <div class="box">
+      <h3>Daily cash-flow position <span style="font-size:0.75rem;color:var(--dim);font-weight:400">Inflows: client repayments. Outflows: disbursements and payments</span></h3>
+      <table>
+        <thead><tr><th>Account</th><th>Ccy</th><th>Opening</th><th>Inflows</th><th>Outflows</th><th>Closing</th><th>Rate</th><th>INR equiv.</th></tr></thead>
+        <tbody id="cashRows"></tbody>
+        <tfoot><tr><td colspan="7">Consolidated net position (INR equivalent)</td><td id="netTot">0</td></tr></tfoot>
+      </table>
+    </div>
+    <div class="box"><div class="pad">
+      <div class="pos"><div class="big" id="netBig">0</div><span class="pill" id="netPill"></span></div>
+      <p class="hint" id="netHint"></p>
+      <div style="margin-top:12px" id="netActions"></div>
+    </div></div>
+  </div>
+
+  <!-- BORROWING -->
+  <div class="pane" id="borrow">
+    <div class="kpis">
+      <div class="kpi"><div class="n" id="bTotal">0</div><div class="l">Total borrowings (INR mn)</div></div>
+      <div class="kpi"><div class="n" id="bAvg">0%</div><div class="l">Average cost of borrowing</div></div>
+      <div class="kpi"><div class="n" id="bMarg">0%</div><div class="l">Marginal cost (latest drawdown)</div></div>
+    </div>
+    <div class="box">
+      <h3>Borrowing chart (WCL / STL register)</h3>
+      <table>
+        <thead><tr><th>Type</th><th>Lender</th><th>Amount</th><th>ROI %</th><th>Value date</th><th>Tenor (days)</th><th>Maturity</th></tr></thead>
+        <tbody id="bRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CP -->
+  <div class="pane" id="cp">
+    <div class="kpis">
+      <div class="kpi"><div class="n" id="cpOut">0</div><div class="l">CP outstanding (INR mn)</div></div>
+      <div class="kpi"><div class="n" id="cpAvg">0%</div><div class="l">Weighted discount rate</div></div>
+      <div class="kpi"><div class="n" id="cpCount">0</div><div class="l">Issuances</div></div>
+    </div>
+    <div class="box">
+      <h3>Commercial paper register</h3>
+      <table>
+        <thead><tr><th>Ref</th><th>Amount</th><th>Discount %</th><th>Issue date</th><th>Maturity</th><th>Investor type</th><th>Status</th></tr></thead>
+        <tbody id="cpRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- LETTERS -->
+  <div class="pane" id="letters">
+    <div class="box"><div class="pad">
+      <div class="form">
+        <div><label>Letter type</label>
+          <select id="lType">
+            <option value="wcl">Request letter to bank: working-capital drawdown</option>
+            <option value="deal">Forex deal confirmation to bank</option>
+            <option value="redeem">CP redemption letter to issuing and paying agent</option>
+          </select></div>
+        <div><label>Counterparty</label><input type="text" id="lParty" value="Bank A"></div>
+        <div><label>Amount (INR mn)</label><input type="number" id="lAmt" value="250"></div>
+        <div><label>Date</label><input type="text" id="lDate"></div>
+        <div><label>Tenor (days) / reference</label><input type="text" id="lRef" value="30"></div>
+        <div><label>Expected rate %</label><input type="text" id="lRate" value="7.20"></div>
+      </div>
+      <pre class="letter" id="lOut"></pre>
+      <div style="margin-top:12px">
+        <button class="btn" id="lApprove">Send for approval</button>
+        <button class="btn alt" id="lCopy">Copy text</button>
+        <span class="status st-pend" id="lStatus">Draft</span>
+      </div>
+      <p class="hint">Letters are generated from standard formats. Competent-authority approval is recorded before sending.</p>
+    </div></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var fmt = function (n) { return n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+  var DAY = 86400000;
+  function d(off) { return new Date(Date.now() + off * DAY); }
+  function ds(x) { return x.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }); }
+
+  /* ---------- Cash flow ---------- */
+  var accts = [
+    { n: 'Bank A (main)', c: 'INR', o: 420, i: 180, x: 215, r: 1 },
+    { n: 'Bank B', c: 'INR', o: 95, i: 40, x: 30, r: 1 },
+    { n: 'Overseas branch 1', c: 'USD', o: 2.4, i: 0.5, x: 0.9, r: 83 },
+    { n: 'Overseas branch 2', c: 'EUR', o: 1.1, i: 0.2, x: 0.3, r: 90 }
+  ];
+  function renderCash() {
+    var h = '';
+    accts.forEach(function (a, k) {
+      h += '<tr><td>' + a.n + '</td><td>' + a.c + '</td><td>' + fmt(a.o) + '</td>' +
+        '<td><input type="number" step="any" data-k="' + k + '" data-f="i" value="' + a.i + '"></td>' +
+        '<td><input type="number" step="any" data-k="' + k + '" data-f="x" value="' + a.x + '"></td>' +
+        '<td id="cl' + k + '"></td><td>' + a.r + '</td><td id="eq' + k + '"></td></tr>';
+    });
+    $('cashRows').innerHTML = h;
+    Array.prototype.forEach.call($('cashRows').querySelectorAll('input'), function (el) {
+      el.oninput = function () { accts[+el.dataset.k][el.dataset.f] = parseFloat(el.value) || 0; calc(); };
+    });
+    calc();
+  }
+  function calc() {
+    var tot = 0;
+    accts.forEach(function (a, k) {
+      var cl = a.o + a.i - a.x, eq = cl * a.r; tot += eq;
+      $('cl' + k).textContent = fmt(cl); $('eq' + k).textContent = fmt(eq);
+    });
+    $('netTot').textContent = fmt(tot); $('netBig').textContent = 'INR ' + fmt(tot) + ' mn';
+    var pill = $('netPill'), hint = $('netHint'), act = $('netActions');
+    var surplus = tot >= 0;
+    pill.textContent = surplus ? 'SURPLUS' : 'DEFICIT'; pill.className = 'pill ' + (surplus ? 'surplus' : 'deficit');
+    $('netBig').style.color = surplus ? 'var(--green)' : 'var(--red)';
+    if (surplus) {
+      hint.textContent = 'Surplus funds can go into overnight investment schemes. The choice of scheme is a management decision and is recorded manually.';
+      act.innerHTML = '<button class="btn alt" id="aInv">Add to investment register</button><span id="aMsg" class="hint"></span>';
+      $('aInv').onclick = function () { $('aMsg').textContent = 'Entry added to the standard investment register (sample).'; };
+    } else {
+      var gap = Math.abs(tot);
+      hint.textContent = 'Deficit: arrange funding through a working-capital loan drawdown or a commercial paper issue to cover INR ' + fmt(gap) + ' mn.';
+      act.innerHTML = '<button class="btn" id="aWcl">Generate drawdown request letter</button><button class="btn alt" id="aCp">Open CP register</button>';
+      $('aWcl').onclick = function () { $('lAmt').value = Math.ceil(gap); $('lType').value = 'wcl'; showTab('letters'); letter(); };
+      $('aCp').onclick = function () { showTab('cp'); };
+    }
+  }
+
+  /* ---------- Borrowing chart ---------- */
+  var loans = [
+    { t: 'WCL', l: 'Bank A', a: 500, r: 7.35, v: -40, ten: 90 },
+    { t: 'WCL', l: 'Bank A', a: 300, r: 7.10, v: -18, ten: 30 },
+    { t: 'STL', l: 'Bank C', a: 200, r: 7.65, v: -10, ten: 60 },
+    { t: 'CP', l: 'Market', a: 400, r: 7.05, v: -5, ten: 91 }
+  ];
+  function renderLoans() {
+    var tot = 0, w = 0, latest = loans[0], h = '';
+    loans.forEach(function (x) {
+      tot += x.a; w += x.a * x.r; if (x.v > latest.v) latest = x;
+      h += '<tr><td>' + x.t + '</td><td>' + x.l + '</td><td>' + fmt(x.a) + '</td><td>' + x.r.toFixed(2) + '</td><td>' + ds(d(x.v)) + '</td><td>' + x.ten + '</td><td>' + ds(d(x.v + x.ten)) + '</td></tr>';
+    });
+    $('bRows').innerHTML = h; $('bTotal').textContent = fmt(tot);
+    $('bAvg').textContent = (w / tot).toFixed(2) + '%'; $('bMarg').textContent = latest.r.toFixed(2) + '%';
+  }
+
+  /* ---------- CP register ---------- */
+  var cps = [
+    { id: 'CP-2026-01', a: 250, r: 7.05, i: -60, m: 91, inv: 'Mutual fund', s: 'Outstanding' },
+    { id: 'CP-2026-02', a: 150, r: 7.02, i: -5, m: 91, inv: 'Bank', s: 'Outstanding' },
+    { id: 'CP-2025-09', a: 200, r: 7.20, i: -150, m: 91, inv: 'Mutual fund', s: 'Redeemed' }
+  ];
+  function renderCp() {
+    var out = 0, w = 0, n = 0, h = '';
+    cps.forEach(function (c) {
+      if (c.s === 'Outstanding') { out += c.a; w += c.a * c.r; n++; }
+      h += '<tr><td>' + c.id + '</td><td>' + fmt(c.a) + '</td><td>' + c.r.toFixed(2) + '</td><td>' + ds(d(c.i)) + '</td><td>' + ds(d(c.i + c.m)) + '</td><td>' + c.inv + '</td><td><span class="status ' + (c.s === 'Outstanding' ? 'out' : 'redeemed') + '">' + c.s + '</span></td></tr>';
+    });
+    $('cpRows').innerHTML = h; $('cpOut').textContent = fmt(out); $('cpAvg').textContent = out ? (w / out).toFixed(2) + '%' : '-'; $('cpCount').textContent = n;
+  }
+
+  /* ---------- Letters ---------- */
+  function letter() {
+    var t = $('lType').value, p = $('lParty').value, a = $('lAmt').value, dt = $('lDate').value, ref = $('lRef').value, rt = $('lRate').value, s;
+    if (t === 'wcl') {
+      s = 'To,\nThe Branch Manager\n' + p + '\n\nDate: ' + dt + '\n\nSub: Request for drawdown under working-capital facility\n\nDear Sir/Madam,\n\nWe request you to kindly release a drawdown of INR ' + a + ' million under our sanctioned working-capital facility on ' + dt + ' for a tenor of ' + ref + ' days at an expected rate of ' + rt + '% p.a.\n\nLoan account no.: [as per register]\nMaturity date: [tenor from drawdown date]\nRemarks: [if any]\n\nThanking you,\nAuthorised signatory\nTreasury Department';
+    } else if (t === 'deal') {
+      s = 'To,\n' + p + ' - Treasury\n\nDate: ' + dt + '\n\nSub: Deal confirmation\n\nWe confirm the following deal struck with you today:\n\nDeal currency: USD\nAmount: equivalent of INR ' + a + ' million\nRate: ' + rt + '\nSettlement date: ' + ref + '\n\nKindly acknowledge.\n\nAuthorised signatories\nTreasury Department';
+    } else {
+      s = 'To,\nThe Issuing and Paying Agent\n' + p + '\n\nDate: ' + dt + '\n\nSub: Redemption of commercial paper ' + ref + '\n\nThe above commercial paper of face value INR ' + a + ' million matures on ' + dt + '. Kindly arrange redemption and credit of proceeds to the investor as per standard instruction.\n\nAuthorised signatory\nTreasury Department';
+    }
+    $('lOut').textContent = s; $('lStatus').textContent = 'Draft'; $('lStatus').className = 'status st-pend'; $('lApprove').textContent = 'Send for approval';
+  }
+  ['lType', 'lParty', 'lAmt', 'lDate', 'lRef', 'lRate'].forEach(function (id) { $(id).oninput = letter; $(id).onchange = letter; });
+  $('lDate').value = ds(d(0));
+  $('lApprove').onclick = function () {
+    var st = $('lStatus');
+    if (st.textContent === 'Draft') { st.textContent = 'Pending approval'; $('lApprove').textContent = 'Mark approved (competent authority)'; }
+    else if (st.textContent === 'Pending approval') { st.textContent = 'Approved - ready to send'; st.className = 'status st-ok'; $('lApprove').textContent = 'Done'; }
+  };
+  $('lCopy').onclick = function () { if (navigator.clipboard) navigator.clipboard.writeText($('lOut').textContent); this.textContent = 'Copied'; var b = this; setTimeout(function () { b.textContent = 'Copy text'; }, 1200); };
+
+  /* ---------- Tabs ---------- */
+  function showTab(p) {
+    Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (t) { t.classList.toggle('on', t.dataset.p === p); });
+    Array.prototype.forEach.call(document.querySelectorAll('.pane'), function (x) { x.classList.toggle('on', x.id === p); });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (t) { t.onclick = function () { showTab(t.dataset.p); }; });
+
+  renderCash(); renderLoans(); renderCp(); letter();
+})();
+</script>
+</body>
+</html>
